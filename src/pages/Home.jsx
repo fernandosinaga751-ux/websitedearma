@@ -405,7 +405,9 @@ function Location() {
                 </svg>
                 <div>
                   <strong>Alamat</strong>
-                  <p>{settings.address || 'Jl. Setia Budi No. 123, Medan Selayang, Kota Medan, Sumatera Utara 20131'}</p>
+                  <a href={settings.mapsUrl || 'https://goo.gl/maps/medan'} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a227', textDecoration: 'underline' }}>
+                    {settings.address || 'Jl. Setia Budi No. 123, Medan Selayang, Kota Medan, Sumatera Utara 20131'}
+                  </a>
                 </div>
               </div>
               <div className={styles.locItem}>

@@ -13,6 +13,7 @@ export default function Contact() {
   const waNumber = settings.whatsapp || '6281234567890'
   const phoneNumber = settings.phone || waNumber
   const address = settings.address || 'Jl. Setia Budi No. 123, Medan Selayang, Kota Medan, Sumatera Utara 20131'
+  const mapsUrl = settings.mapsUrl || 'https://goo.gl/maps/medan'
   const waLink = `https://wa.me/${waNumber}`
 
   const formatPhone = (num) => {
@@ -102,7 +103,7 @@ export default function Contact() {
                   <span className={styles.arrow}>→</span>
                 </a>
 
-                <div className={styles.contactItem}>
+                <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={styles.contactItem} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div className={styles.contactIcon}>
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
@@ -112,7 +113,7 @@ export default function Contact() {
                     <strong>Alamat</strong>
                     <p>{address.split(',').map((line, i) => <span key={i}>{line.trim()}<br /></span>)}</p>
                   </div>
-                </div>
+                </a>
 
                 <div className={styles.contactItem}>
                   <div className={styles.contactIcon}>
