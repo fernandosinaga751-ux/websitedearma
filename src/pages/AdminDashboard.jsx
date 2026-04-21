@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc,
-  orderBy, query, serverTimestamp, getDoc
+  orderBy, query, serverTimestamp, getDoc, setDoc
 } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { auth, db, storage } from '../firebase/config'
@@ -423,6 +423,7 @@ function ToursTab({ tours, refresh }) {
     e.preventDefault()
     if (!form.name || !form.price) { toast.error('Nama dan harga wajib diisi!'); return }
     try {
+      console.log('Saving tour data:', form)
       const data = { ...form, price: Number(form.price), updatedAt: serverTimestamp() }
       if (editing) {
         await updateDoc(doc(db, 'tours', editing), data)
@@ -434,7 +435,10 @@ function ToursTab({ tours, refresh }) {
       setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '' })
       setEditing(null); setShowForm(false)
       refresh()
-    } catch { toast.error('Gagal menyimpan') }
+    } catch (err) { 
+      console.error('Error saving tour:', err)
+      toast.error('Gagal menyimpan: ' + err.message) 
+    }
   }
 
   const remove = async id => {
@@ -541,6 +545,7 @@ function CarsTab({ cars, refresh }) {
     e.preventDefault()
     if (!form.name || !form.pricePerDay) { toast.error('Nama dan harga wajib diisi!'); return }
     try {
+      console.log('Saving car data:', form)
       const data = {
         ...form,
         seats: Number(form.seats) || 7,
@@ -559,7 +564,10 @@ function CarsTab({ cars, refresh }) {
       setForm({ name: '', category: '', seats: '', pricePerDay: '', priceWithDriver: '', description: '', features: '', imageUrl: '', tag: '' })
       setEditing(null); setShowForm(false)
       refresh()
-    } catch { toast.error('Gagal menyimpan') }
+    } catch (err) { 
+      console.error('Error saving car:', err)
+      toast.error('Gagal menyimpan: ' + err.message) 
+    }
   }
 
   const remove = async id => {
@@ -677,10 +685,14 @@ function SeoTab({ seo, refresh }) {
 
   const save = async () => {
     try {
-      await updateDoc(doc(db, 'settings', 'seo'), { ...form, updatedAt: serverTimestamp() })
+      console.log('Saving SEO data:', form)
+      await setDoc(doc(db, 'settings', 'seo'), { ...form, updatedAt: serverTimestamp() }, { merge: true })
       toast.success('Pengaturan SEO disimpan!')
       refresh()
-    } catch { toast.error('Gagal menyimpan') }
+    } catch (err) { 
+      console.error('Error saving SEO:', err)
+      toast.error('Gagal menyimpan: ' + err.message) 
+    }
   }
 
   const onImageChange = async (e) => {
