@@ -68,20 +68,6 @@ function Hero() {
           Dari city car hingga luxury MPV — semua tersedia untuk Anda.
         </p>
 
-        <div className={styles.heroStats}>
-          {[
-            { num: '100+', label: 'Armada Aktif' },
-            { num: '5000+', label: 'Pelanggan Puas' },
-            { num: '6+', label: 'Tahun Pengalaman' },
-            { num: '24/7', label: 'Layanan' }
-          ].map(s => (
-            <div key={s.label} className={styles.stat}>
-              <span className={styles.statNum}>{s.num}</span>
-              <span className={styles.statLabel}>{s.label}</span>
-            </div>
-          ))}
-        </div>
-
         <div className={styles.heroCta}>
           <a href={waUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaPrimary}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

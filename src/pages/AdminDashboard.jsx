@@ -782,7 +782,12 @@ function SettingsTab({ settings, refresh }) {
     fleetHeader3: settings?.fleetHeader3 || '',
     tourHeader1: settings?.tourHeader1 || '',
     tourHeader2: settings?.tourHeader2 || '',
-    tourHeader3: settings?.tourHeader3 || ''
+    tourHeader3: settings?.tourHeader3 || '',
+    homeHeader1: settings?.homeHeader1 || '',
+    homeHeader2: settings?.homeHeader2 || '',
+    homeHeader3: settings?.homeHeader3 || '',
+    homeHeader4: settings?.homeHeader4 || '',
+    homeHeader5: settings?.homeHeader5 || ''
   })
   const [uploading, setUploading] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
@@ -838,6 +843,20 @@ function SettingsTab({ settings, refresh }) {
         <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Logo Website</h4>
         <div className={styles.field}><label>Upload Logo</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'logoUrl')} className={styles.inp} disabled={uploading} />
           {form.logoUrl && <img src={form.logoUrl} alt="Logo Preview" style={{ width: 150, marginTop: 8, borderRadius: 8 }} />}
+        </div>
+
+        <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Header Utama Website (5 Foto)</h4>
+        <div className={styles.formGrid}>
+          <div className={styles.field}><label>Foto 1</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'homeHeader1')} className={styles.inp} disabled={uploading} />
+            {form.homeHeader1 && <img src={form.homeHeader1} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 2</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'homeHeader2')} className={styles.inp} disabled={uploading} />
+            {form.homeHeader2 && <img src={form.homeHeader2} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 3</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'homeHeader3')} className={styles.inp} disabled={uploading} />
+            {form.homeHeader3 && <img src={form.homeHeader3} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 4</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'homeHeader4')} className={styles.inp} disabled={uploading} />
+            {form.homeHeader4 && <img src={form.homeHeader4} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 5</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'homeHeader5')} className={styles.inp} disabled={uploading} />
+            {form.homeHeader5 && <img src={form.homeHeader5} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
         </div>
 
         <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Header Halaman Armada (3 Foto)</h4>
