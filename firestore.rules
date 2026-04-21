@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Articles: public read, authenticated write
+    match /articles/{docId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Testimonials: public read, authenticated write
+    match /testimonials/{docId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Contacts: public create (form submission), authenticated read/update/delete
+    match /contacts/{docId} {
+      allow create: if request.resource.data.keys().hasAll(['name','phone','message'])
+                    && request.resource.data.name is string
+                    && request.resource.data.phone is string
+                    && request.resource.data.message is string
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.message.size() <= 2000;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

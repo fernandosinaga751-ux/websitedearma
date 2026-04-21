@@ -1,0 +1,381 @@
+.header {
+  position: relative;
+  padding: 100px 0;
+  overflow: hidden;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+}
+
+.headerBg {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(201,162,39,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(201,162,39,0.1) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.headerContent {
+  position: relative;
+  z-index: 1;
+}
+
+.tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c9a227;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #a0a0a0;
+  max-width: 500px;
+  line-height: 1.7;
+}
+
+.toursSection {
+  padding: 80px 0;
+  background: #0a0a0a;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.empty h3 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.empty .ctaBtn {
+  display: inline-flex;
+  margin-top: 20px;
+  padding: 14px 28px;
+  background: #c9a227;
+  color: #000;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  background: #141414;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #222;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tag2 {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 12px;
+  background: #c9a227;
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.imageWrap {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.imageWrap:hover .imageOverlay {
+  opacity: 1;
+}
+
+.imageWrap:hover .image {
+  transform: scale(1.05);
+}
+
+.imageOverlay span {
+  padding: 10px 20px;
+  border: 1px solid #fff;
+  color: #fff;
+  font-size: 0.85rem;
+  border-radius: 4px;
+}
+
+.cardBody {
+  padding: 24px;
+}
+
+.tourName {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.duration {
+  font-size: 0.85rem;
+  color: #c9a227;
+  margin-bottom: 12px;
+}
+
+.desc {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.includes {
+  margin-bottom: 16px;
+}
+
+.includes h4 {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+.includes ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.includes li {
+  font-size: 0.85rem;
+  color: #6b7280;
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.includes li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #22c55e;
+}
+
+.pricing {
+  padding: 16px 0;
+  border-top: 1px solid #222;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.priceLabel {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #c9a227;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.bookBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  background: #c9a227;
+  color: #000;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.bookBtn:hover {
+  background: #ddb82e;
+  transform: translateY(-2px);
+}
+
+.detailBtn {
+  padding: 14px 24px;
+  background: transparent;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.detailBtn:hover {
+  border-color: #c9a227;
+  color: #c9a227;
+}
+
+.ctaSection {
+  padding: 60px 0;
+  background: #141414;
+}
+
+.ctaContent {
+  text-align: center;
+}
+
+.ctaContent h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.ctaContent p {
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  padding: 14px 32px;
+  background: #c9a227;
+  color: #000;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalInner {
+  background: #141414;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); }
+  to { transform: translateY(0); }
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalImg {
+  height: 300px;
+  background: #1a1a1a;
+}
+
+.modalImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modalBody {
+  padding: 32px;
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 2.5rem; }
+  .grid { grid-template-columns: 1fr; }
+  .modalInner { max-height: 85vh; }
+  .modalImg { height: 200px; }
+}
