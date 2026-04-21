@@ -398,7 +398,7 @@ function ContactsTab({ contacts, refresh }) {
 
 // --- Tours Tab ---
 function ToursTab({ tours, refresh }) {
-  const [form, setForm] = useState({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '' })
+  const [form, setForm] = useState({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1' })
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -427,7 +427,12 @@ function ToursTab({ tours, refresh }) {
     if (!form.name || !form.price) { toast.error('Nama dan harga wajib diisi!'); return }
     try {
       console.log('Saving tour data:', form)
-      const data = { ...form, price: Number(form.price), updatedAt: serverTimestamp() }
+      const data = { 
+        ...form, 
+        price: Number(form.price), 
+        minParticipants: Number(form.minParticipants) || 1,
+        updatedAt: serverTimestamp() 
+      }
       if (editing) {
         await updateDoc(doc(db, 'tours', editing), data)
         toast.success('Paket tour diperbarui!')
@@ -435,7 +440,7 @@ function ToursTab({ tours, refresh }) {
         await addDoc(collection(db, 'tours'), { ...data, createdAt: serverTimestamp() })
         toast.success('Paket tour ditambahkan!')
       }
-      setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '' })
+      setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1' })
       setEditing(null); setShowForm(false)
       refresh()
     } catch (err) { 
@@ -451,14 +456,25 @@ function ToursTab({ tours, refresh }) {
   }
 
   const edit = t => {
-    setForm({ name: t.name, description: t.description || '', price: t.price?.toString() || '', duration: t.duration || '', included: t.included || '', excluded: t.excluded || '', imageUrl: t.imageUrl || '', tag: t.tag || '' })
+    setForm({ 
+      name: t.name, 
+      description: t.description || '', 
+      price: t.price?.toString() || '', 
+      duration: t.duration || '', 
+      included: t.included || '', 
+      excluded: t.excluded || '', 
+      imageUrl: t.imageUrl || '', 
+      tag: t.tag || '',
+      itinerary: t.itinerary || '',
+      minParticipants: t.minParticipants?.toString() || '1'
+    })
     setEditing(t.id); setShowForm(true)
   }
 
   return (
     <div>
       <div className={styles.tabHeader}>
-        <button className={styles.addBtn} onClick={() => { setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '' }); setEditing(null); setShowForm(true) }}>
+        <button className={styles.addBtn} onClick={() => { setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1' }); setEditing(null); setShowForm(true) }}>
           + Tambah Paket Tour
         </button>
       </div>
@@ -471,14 +487,16 @@ function ToursTab({ tours, refresh }) {
               <div className={styles.field}><label>Nama Paket *</label><input name="name" value={form.name} onChange={handle} className={styles.inp} placeholder="Paket Tour Lake Toba, dll" /></div>
               <div className={styles.field}><label>Harga (Rp) *</label><input name="price" type="number" value={form.price} onChange={handle} className={styles.inp} placeholder="500000" /></div>
               <div className={styles.field}><label>Durasi</label><input name="duration" value={form.duration} onChange={handle} className={styles.inp} placeholder="2 Hari 1 Malam" /></div>
-              <div className={styles.field}><label>Tag</label><input name="tag" value={form.tag} onChange={handle} className={styles.inp} placeholder="Terlaris, Promo, dll" /></div>
+              <div className={styles.field}><label>Min. Peserta</label><input name="minParticipants" type="number" value={form.minParticipants} onChange={handle} className={styles.inp} placeholder="1" /></div>
             </div>
+            <div className={styles.field}><label>Tag</label><input name="tag" value={form.tag} onChange={handle} className={styles.inp} placeholder="Terlaris, Promo, dll" /></div>
             <div className={styles.field}><label>Deskripsi</label><textarea name="description" value={form.description} onChange={handle} className={styles.inp} rows={3} placeholder="Deskripsi paket tour..." /></div>
+            <div className={styles.field}><label>Itinerary (satu baris per hari)</label><textarea name="itinerary" value={form.itinerary} onChange={handle} className={styles.inp} rows={4} placeholder="Hari 1: Check-in hotel&#10;Hari 2: Tour danau&#10;Hari 3: Pulang" /></div>
             <div className={styles.field}><label>Gambar (16:9)</label><input type="file" accept="image/*" onChange={onImageChange} className={styles.inp} disabled={uploading} />
               {form.imageUrl && <img src={form.imageUrl} alt="Preview" style={{ width: 120, height: 80, objectFit: 'cover', marginTop: 8, borderRadius: 8 }} />}
             </div>
-            <div className={styles.field}><label>Termasuk</label><textarea name="included" value={form.included} onChange={handle} className={styles.inp} rows={2} placeholder="Tiket masuk, Hotel, Sopir, dll" /></div>
-            <div className={styles.field}><label>Tidak Termasuk</label><textarea name="excluded" value={form.excluded} onChange={handle} className={styles.inp} rows={2} placeholder="Makan, Tiket masuk objek wisata" /></div>
+            <div className={styles.field}><label>Termasuk (satu per baris)</label><textarea name="included" value={form.included} onChange={handle} className={styles.inp} rows={3} placeholder="Tiket masuk&#10;Hotel&#10;Sopir & mobil" /></div>
+            <div className={styles.field}><label>Tidak Termasuk (satu per baris)</label><textarea name="excluded" value={form.excluded} onChange={handle} className={styles.inp} rows={2} placeholder="Makanan&#10;Tiket masuk objek wisata tambahan" /></div>
             <div className={styles.formActions}>
               <button type="submit" className={styles.saveBtn} disabled={uploading}>{editing ? 'Update' : 'Simpan'}</button>
               <button type="button" onClick={() => setShowForm(false)} className={styles.cancelBtn}>Batal</button>

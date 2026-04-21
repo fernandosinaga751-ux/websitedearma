@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
 import { db } from '../firebase/config'
@@ -74,19 +75,21 @@ export default function Tours() {
                 <div key={tour.id} className={styles.card} style={{ animationDelay: `${i * 0.1}s` }}>
                   {tour.tag && <div className={styles.tag2}>{tour.tag}</div>}
                   
-                  <div className={styles.imageWrap} onClick={() => setSelected(tour)}>
-                    {tour.imageUrl ? (
-                      <img src={tour.imageUrl} alt={tour.name} className={styles.image} loading="lazy" />
-                    ) : (
-                      <div className={styles.imagePlaceholder}>
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-                        </svg>
+                  <div className={styles.imageWrap}>
+                    <Link to={`/paket-wisata/${tour.id}`}>
+                      {tour.imageUrl ? (
+                        <img src={tour.imageUrl} alt={tour.name} className={styles.image} loading="lazy" />
+                      ) : (
+                        <div className={styles.imagePlaceholder}>
+                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                          </svg>
+                        </div>
+                      )}
+                      <div className={styles.imageOverlay}>
+                        <span>Lihat Detail</span>
                       </div>
-                    )}
-                    <div className={styles.imageOverlay}>
-                      <span>Lihat Detail</span>
-                    </div>
+                    </Link>
                   </div>
 
                   <div className={styles.cardBody}>

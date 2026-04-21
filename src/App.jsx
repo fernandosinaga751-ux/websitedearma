@@ -6,6 +6,7 @@ import WhatsAppButton from './components/WhatsAppButton'
 import Home from './pages/Home'
 import Fleet from './pages/Fleet'
 import Tours from './pages/Tours'
+import TourDetail from './pages/TourDetail'
 import Articles from './pages/Articles'
 import ArticleDetail from './pages/ArticleDetail'
 import Contact from './pages/Contact'
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/armada" element={<Fleet />} />
           <Route path="/paket-wisata" element={<Tours />} />
+          <Route path="/paket-wisata/:id" element={<TourDetail />} />
           <Route path="/artikel" element={<Articles />} />
           <Route path="/artikel/:id" element={<ArticleDetail />} />
           <Route path="/kontak" element={<Contact />} />
