@@ -454,25 +454,7 @@ function ToursTab({ tours, refresh }) {
     setEditing(t.id); setShowForm(true)
   }
 
-  const onImageChange = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    
-    setUploading(true)
-    try {
-      const url = await uploadToCloudinary(file, 'dearma/tours')
-      if (url) {
-        setForm(p => ({ ...p, imageUrl: url }))
-        toast.success('Gambar berhasil diupload!')
-      }
-    } catch (err) {
-      toast.error('Gagal upload gambar: ' + err.message)
-    } finally {
-      setUploading(false)
-    }
-  }
-
-  const remove = async id => {
+  return (
     <div>
       <div className={styles.tabHeader}>
         <button className={styles.addBtn} onClick={() => { setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '' }); setEditing(null); setShowForm(true) }}>
@@ -491,11 +473,11 @@ function ToursTab({ tours, refresh }) {
               <div className={styles.field}><label>Tag</label><input name="tag" value={form.tag} onChange={handle} className={styles.inp} placeholder="Terlaris, Promo, dll" /></div>
             </div>
             <div className={styles.field}><label>Deskripsi</label><textarea name="description" value={form.description} onChange={handle} className={styles.inp} rows={3} placeholder="Deskripsi paket tour..." /></div>
-            <div className={styles.field}><label>Imagemax (16:9)</label><input type="file" accept="image/*" onChange={onImageChange} className={styles.inp} disabled={uploading} />
+            <div className={styles.field}><label>Gambar (16:9)</label><input type="file" accept="image/*" onChange={onImageChange} className={styles.inp} disabled={uploading} />
               {form.imageUrl && <img src={form.imageUrl} alt="Preview" style={{ width: 120, height: 80, objectFit: 'cover', marginTop: 8, borderRadius: 8 }} />}
             </div>
             <div className={styles.field}><label>Termasuk</label><textarea name="included" value={form.included} onChange={handle} className={styles.inp} rows={2} placeholder="Tiket masuk, Hotel, Sopir, dll" /></div>
-            <div className={styles.field}><label>Tidak Termasuk</label><textarea name="excluded" value={form.excluded} onChange={handle} className={styles.inp} rows={2} placeholder="Makan, Tiket masuk объек wisata" /></div>
+            <div className={styles.field}><label>Tidak Termasuk</label><textarea name="excluded" value={form.excluded} onChange={handle} className={styles.inp} rows={2} placeholder="Makan, Tiket masuk objek wisata" /></div>
             <div className={styles.formActions}>
               <button type="submit" className={styles.saveBtn} disabled={uploading}>{editing ? 'Update' : 'Simpan'}</button>
               <button type="button" onClick={() => setShowForm(false)} className={styles.cancelBtn}>Batal</button>
