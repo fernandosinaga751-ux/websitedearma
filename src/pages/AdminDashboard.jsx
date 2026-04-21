@@ -5,8 +5,8 @@ import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc,
   orderBy, query, serverTimestamp, getDoc, setDoc
 } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { auth, db, storage } from '../firebase/config'
+import { auth, db } from '../firebase/config'
+import { uploadToCloudinary } from '../utils/cloudinary'
 import toast from 'react-hot-toast'
 import logo from '../assets/logo.png'
 import styles from './AdminDashboard.module.css'
@@ -403,17 +403,19 @@ function ToursTab({ tours, refresh }) {
   const [uploading, setUploading] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
-  const uploadImage = async (file) => {
-    if (!file) return null
+  const onImageChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    
     setUploading(true)
     try {
-      const storageRef = ref(storage, `tours/${Date.now()}_${file.name}`)
-      await uploadBytes(storageRef, file)
-      const url = await getDownloadURL(storageRef)
-      return url
-    } catch (e) {
-      toast.error('Gagal upload gambar')
-      return null
+      const url = await uploadToCloudinary(file, 'dearma/tours')
+      if (url) {
+        setForm(p => ({ ...p, imageUrl: url }))
+        toast.success('Gambar berhasil diupload!')
+      }
+    } catch (err) {
+      toast.error('Gagal upload gambar: ' + err.message)
     } finally {
       setUploading(false)
     }
@@ -454,13 +456,23 @@ function ToursTab({ tours, refresh }) {
 
   const onImageChange = async (e) => {
     const file = e.target.files[0]
-    if (file) {
-      const url = await uploadImage(file)
-      if (url) setForm(p => ({ ...p, imageUrl: url }))
+    if (!file) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadToCloudinary(file, 'dearma/tours')
+      if (url) {
+        setForm(p => ({ ...p, imageUrl: url }))
+        toast.success('Gambar berhasil diupload!')
+      }
+    } catch (err) {
+      toast.error('Gagal upload gambar: ' + err.message)
+    } finally {
+      setUploading(false)
     }
   }
 
-  return (
+  const remove = async id => {
     <div>
       <div className={styles.tabHeader}>
         <button className={styles.addBtn} onClick={() => { setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '' }); setEditing(null); setShowForm(true) }}>
@@ -525,17 +537,19 @@ function CarsTab({ cars, refresh }) {
   const [uploading, setUploading] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
-  const uploadImage = async (file) => {
-    if (!file) return null
+  const onImageChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    
     setUploading(true)
     try {
-      const storageRef = ref(storage, `cars/${Date.now()}_${file.name}`)
-      await uploadBytes(storageRef, file)
-      const url = await getDownloadURL(storageRef)
-      return url
-    } catch (e) {
-      toast.error('Gagal upload gambar')
-      return null
+      const url = await uploadToCloudinary(file, 'dearma/cars')
+      if (url) {
+        setForm(p => ({ ...p, imageUrl: url }))
+        toast.success('Gambar berhasil diupload!')
+      }
+    } catch (err) {
+      toast.error('Gagal upload gambar: ' + err.message)
     } finally {
       setUploading(false)
     }
@@ -582,14 +596,6 @@ function CarsTab({ cars, refresh }) {
       description: c.description || '', features: c.features?.join(', ') || '', imageUrl: c.imageUrl || '', tag: c.tag || ''
     })
     setEditing(c.id); setShowForm(true)
-  }
-
-  const onImageChange = async (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const url = await uploadImage(file)
-      if (url) setForm(p => ({ ...p, imageUrl: url }))
-    }
   }
 
   const categories = ['MPV', 'MPV Premium', 'SUV', 'Luxury MPV', 'Luxury Hybrid', 'Minibus', 'Luxury Minibus']
@@ -667,22 +673,6 @@ function SeoTab({ seo, refresh }) {
   const [uploading, setUploading] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
-  const uploadImage = async (file) => {
-    if (!file) return null
-    setUploading(true)
-    try {
-      const storageRef = ref(storage, `seo/og-${Date.now()}_${file.name}`)
-      await uploadBytes(storageRef, file)
-      const url = await getDownloadURL(storageRef)
-      return url
-    } catch (e) {
-      toast.error('Gagal upload gambar')
-      return null
-    } finally {
-      setUploading(false)
-    }
-  }
-
   const save = async () => {
     try {
       console.log('Saving SEO data:', form)
@@ -697,9 +687,19 @@ function SeoTab({ seo, refresh }) {
 
   const onImageChange = async (e) => {
     const file = e.target.files[0]
-    if (file) {
-      const url = await uploadImage(file)
-      if (url) setForm(p => ({ ...p, ogImage: url }))
+    if (!file) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadToCloudinary(file, 'dearma/seo')
+      if (url) {
+        setForm(p => ({ ...p, ogImage: url }))
+        toast.success('Gambar berhasil diupload!')
+      }
+    } catch (err) {
+      toast.error('Gagal upload gambar: ' + err.message)
+    } finally {
+      setUploading(false)
     }
   }
 
