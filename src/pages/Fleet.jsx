@@ -34,6 +34,7 @@ export default function Fleet() {
   const carList = dbCars.length > 0 ? dbCars : staticCars
   const filtered = filter === 'Semua' ? carList : carList.filter(c => c.category === filter)
   const waBase = 'https://wa.me/6281234567890?text='
+  const cars = carList
 
   return (
     <>
