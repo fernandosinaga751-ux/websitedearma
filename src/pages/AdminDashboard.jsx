@@ -7,6 +7,7 @@ import {
 } from 'firebase/firestore'
 import { auth, db } from '../firebase/config'
 import { uploadToCloudinary } from '../utils/cloudinary'
+import { seedCarsToFirebase } from '../utils/seedData'
 import toast from 'react-hot-toast'
 import logo from '../assets/logo.png'
 import styles from './AdminDashboard.module.css'
@@ -517,7 +518,26 @@ function CarsTab({ cars, refresh }) {
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [seeding, setSeeding] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+
+  const handleSeedCars = async () => {
+    if (!confirm('Hapus semua armada dan reset ke data default?')) return
+    setSeeding(true)
+    try {
+      const result = await seedCarsToFirebase()
+      if (result.success) {
+        toast.success(`Berhasil reset ${result.count} armada!`)
+        refresh()
+      } else {
+        toast.error('Gagal: ' + result.error)
+      }
+    } catch (err) {
+      toast.error('Error: ' + err.message)
+    } finally {
+      setSeeding(false)
+    }
+  }
 
   const onImageChange = async (e) => {
     const file = e.target.files[0]
@@ -587,6 +607,14 @@ function CarsTab({ cars, refresh }) {
       <div className={styles.tabHeader}>
         <button className={styles.addBtn} onClick={() => { setForm({ name: '', category: '', seats: '', pricePerDay: '', priceWithDriver: '', description: '', features: '', imageUrl: '', tag: '' }); setEditing(null); setShowForm(true) }}>
           + Tambah Armada
+        </button>
+        <button 
+          className={styles.addBtn} 
+          style={{ background: '#ef4444', marginLeft: 'auto' }}
+          onClick={handleSeedCars}
+          disabled={seeding}
+        >
+          {seeding ? 'Resetting...' : '⚡ Reset ke Default'}
         </button>
       </div>
 
