@@ -1,12 +1,29 @@
 import { useState, useEffect } from 'react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../firebase/config'
 import styles from './WhatsAppButton.module.css'
 
-const WA_NUMBER = '6281234567890'
-const WA_MESSAGE = 'Halo Dearma Sewa Mobil, saya ingin menanyakan ketersediaan dan harga rental mobil'
+const DEFAULT_WA = '6281234567890'
+const DEFAULT_MESSAGE = 'Halo Dearma Sewa Mobil, saya ingin menanyakan ketersediaan dan harga rental mobil'
 
 export default function WhatsAppButton() {
   const [visible, setVisible] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
+  const [waNumber, setWaNumber] = useState(DEFAULT_WA)
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'general'))
+        if (snap.exists() && snap.data().whatsapp) {
+          setWaNumber(snap.data().whatsapp)
+        }
+      } catch (e) {
+        // use default
+      }
+    }
+    fetchSettings()
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 1500)
@@ -15,7 +32,7 @@ export default function WhatsAppButton() {
     return () => { clearTimeout(timer); clearTimeout(tooltip); clearTimeout(hideTooltip) }
   }, [])
 
-  const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`
 
   return (
     <a

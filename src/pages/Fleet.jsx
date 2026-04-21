@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, getDoc, doc } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { formatPrice } from '../data/cars'
 import { cars as staticCars } from '../data/cars'
@@ -13,14 +13,23 @@ export default function Fleet() {
   const [selected, setSelected] = useState(null)
   const [dbCars, setDbCars] = useState([])
   const [loading, setLoading] = useState(true)
+  const [headerImages, setHeaderImages] = useState([])
+  const [currentSlide, setCurrentSlide] = useState(0)
 
   useEffect(() => {
-    const fetchCars = async () => {
+    const fetchData = async () => {
       try {
-        const q = query(collection(db, 'cars'), orderBy('createdAt', 'desc'))
-        const snap = await getDocs(q)
-        if (!snap.empty) {
-          setDbCars(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        const [carsSnap, settingsSnap] = await Promise.all([
+          getDocs(query(collection(db, 'cars'), orderBy('createdAt', 'desc'))),
+          getDoc(doc(db, 'settings', 'general'))
+        ])
+        if (!carsSnap.empty) {
+          setDbCars(carsSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+        }
+        if (settingsSnap.exists()) {
+          const s = settingsSnap.data()
+          const images = [s.fleetHeader1, s.fleetHeader2, s.fleetHeader3].filter(Boolean)
+          setHeaderImages(images.length > 0 ? images : [])
         }
       } catch (e) {
         // use static data on error
@@ -28,8 +37,17 @@ export default function Fleet() {
         setLoading(false)
       }
     }
-    fetchCars()
+    fetchData()
   }, [])
+
+  useEffect(() => {
+    if (headerImages.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentSlide(p => (p + 1) % headerImages.length)
+      }, 5000)
+      return () => clearInterval(timer)
+    }
+  }, [headerImages.length])
 
   const carList = dbCars.length > 0 ? dbCars : staticCars
   const filtered = filter === 'Semua' ? carList : carList.filter(c => c.category === filter)
@@ -43,9 +61,24 @@ export default function Fleet() {
         <meta name="description" content="Lihat lengkap armada rental mobil Dearma Sewa Mobil Medan. Toyota Alphard, Fortuner, Innova Zenix, Hiace Premio, Pajero Sport, Avanza. Harga terjangkau dan armada terawat." />
       </Helmet>
 
-      {/* Page Header */}
+      {/* Page Header with Slider */}
       <section className={styles.header}>
-        <div className={styles.headerBg} />
+        {headerImages.length > 0 ? (
+          <>
+            <div className={styles.headerSlider}>
+              {headerImages.map((img, idx) => (
+                <div 
+                  key={idx} 
+                  className={`${styles.slide} ${idx === currentSlide ? styles.slideActive : ''}`}
+                  style={{ backgroundImage: `url(${img})` }}
+                />
+              ))}
+            </div>
+            <div className={styles.headerOverlay} />
+          </>
+        ) : (
+          <div className={styles.headerBg} />
+        )}
         <div className="container">
           <div className={styles.headerContent}>
             <p className={styles.tag}>Pilihan Lengkap</p>

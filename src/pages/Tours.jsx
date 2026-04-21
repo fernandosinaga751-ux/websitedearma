@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, getDoc, doc } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import styles from './Tours.module.css'
 
@@ -18,21 +18,39 @@ export default function Tours() {
   const [tours, setTours] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
+  const [headerImages, setHeaderImages] = useState([])
+  const [currentSlide, setCurrentSlide] = useState(0)
 
   useEffect(() => {
-    const fetchTours = async () => {
+    const fetchData = async () => {
       try {
-        const q = query(collection(db, 'tours'), orderBy('createdAt', 'desc'))
-        const snap = await getDocs(q)
-        setTours(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        const [toursSnap, settingsSnap] = await Promise.all([
+          getDocs(query(collection(db, 'tours'), orderBy('createdAt', 'desc'))),
+          getDoc(doc(db, 'settings', 'general'))
+        ])
+        setTours(toursSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+        if (settingsSnap.exists()) {
+          const s = settingsSnap.data()
+          const images = [s.tourHeader1, s.tourHeader2, s.tourHeader3].filter(Boolean)
+          setHeaderImages(images.length > 0 ? images : [])
+        }
       } catch (e) {
         setTours([])
       } finally {
         setLoading(false)
       }
     }
-    fetchTours()
+    fetchData()
   }, [])
+
+  useEffect(() => {
+    if (headerImages.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentSlide(p => (p + 1) % headerImages.length)
+      }, 5000)
+      return () => clearInterval(timer)
+    }
+  }, [headerImages.length])
 
   const waBase = 'https://wa.me/6281234567890?text='
 
@@ -44,7 +62,22 @@ export default function Tours() {
       </Helmet>
 
       <section className={styles.header}>
-        <div className={styles.headerBg} />
+        {headerImages.length > 0 ? (
+          <>
+            <div className={styles.headerSlider}>
+              {headerImages.map((img, idx) => (
+                <div 
+                  key={idx} 
+                  className={`${styles.slide} ${idx === currentSlide ? styles.slideActive : ''}`}
+                  style={{ backgroundImage: `url(${img})` }}
+                />
+              ))}
+            </div>
+            <div className={styles.headerOverlay} />
+          </>
+        ) : (
+          <div className={styles.headerBg} />
+        )}
         <div className="container">
           <div className={styles.headerContent}>
             <p className={styles.tag}>Jelajahi Sumatera</p>

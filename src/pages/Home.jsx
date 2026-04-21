@@ -235,7 +235,7 @@ function FeaturedCars() {
   }, [])
 
   const carList = dbCars.length > 0 ? dbCars : staticCars
-  const featured = carList.filter(c => c.popular).slice(0, 4)
+  const featured = carList.slice(0, 6)
   const waBase = 'https://wa.me/6281234567890?text='
 
   return (
@@ -463,7 +463,15 @@ function ArticlesPreview() {
       try {
         const q = query(collection(db, 'articles'), orderBy('createdAt', 'desc'), limit(3))
         const snap = await getDocs(q)
-        setArticles(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        if (!snap.empty) {
+          setArticles(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        } else {
+          setArticles([
+            { id: '1', title: 'Tips Memilih Rental Mobil Terpercaya di Medan', excerpt: 'Panduan lengkap untuk memilih jasa rental mobil yang aman, terpercaya, dan sesuai budget Anda di kota Medan.', category: 'Tips', date: '2024-01-15' },
+            { id: '2', title: 'Destinasi Wisata Terbaik Sumatera Utara dengan Mobil Rental', excerpt: 'Jelajahi keindahan Danau Toba, Brastagi, dan destinasi lainnya dengan nyaman menggunakan mobil rental.', category: 'Wisata', date: '2024-01-10' },
+            { id: '3', title: 'Keuntungan Sewa Mobil dengan Sopir vs Lepas Kunci', excerpt: 'Pertimbangkan keuntungan dan kekurangan sewa mobil dengan sopir dan tanpa sopir sebelum memutuskan.', category: 'Info', date: '2024-01-05' }
+          ])
+        }
       } catch (e) {
         setArticles([
           { id: '1', title: 'Tips Memilih Rental Mobil Terpercaya di Medan', excerpt: 'Panduan lengkap untuk memilih jasa rental mobil yang aman, terpercaya, dan sesuai budget Anda di kota Medan.', category: 'Tips', date: '2024-01-15' },

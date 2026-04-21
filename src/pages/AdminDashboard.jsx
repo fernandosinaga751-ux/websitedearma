@@ -12,7 +12,7 @@ import toast from 'react-hot-toast'
 import logo from '../assets/logo.svg'
 import styles from './AdminDashboard.module.css'
 
-const TABS = ['Dashboard', 'Artikel', 'Testimoni', 'Paket Tour', 'Armada', 'SEO', 'Pesan Masuk']
+const TABS = ['Dashboard', 'Artikel', 'Testimoni', 'Paket Tour', 'Armada', 'SEO', 'Pengaturan', 'Pesan Masuk']
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState('Dashboard')
@@ -21,6 +21,7 @@ export default function AdminDashboard() {
   const [tours, setTours] = useState([])
   const [cars, setCars] = useState([])
   const [seo, setSeo] = useState({})
+  const [settings, setSettings] = useState({})
   const [contacts, setContacts] = useState([])
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -30,12 +31,13 @@ export default function AdminDashboard() {
   const fetchAll = async () => {
     setLoading(true)
     try {
-      const [artSnap, testiSnap, tourSnap, carSnap, seoSnap, contactSnap] = await Promise.all([
+      const [artSnap, testiSnap, tourSnap, carSnap, seoSnap, settingsSnap, contactSnap] = await Promise.all([
         getDocs(query(collection(db, 'articles'), orderBy('createdAt', 'desc'))),
         getDocs(query(collection(db, 'testimonials'), orderBy('createdAt', 'desc'))),
         getDocs(query(collection(db, 'tours'), orderBy('createdAt', 'desc'))),
         getDocs(query(collection(db, 'cars'), orderBy('createdAt', 'desc'))),
         getDoc(doc(db, 'settings', 'seo')),
+        getDoc(doc(db, 'settings', 'general')),
         getDocs(query(collection(db, 'contacts'), orderBy('createdAt', 'desc')))
       ])
       setArticles(artSnap.docs.map(d => ({ id: d.id, ...d.data() })))
@@ -43,6 +45,7 @@ export default function AdminDashboard() {
       setTours(tourSnap.docs.map(d => ({ id: d.id, ...d.data() })))
       setCars(carSnap.docs.map(d => ({ id: d.id, ...d.data() })))
       setSeo(seoSnap.exists() ? seoSnap.data() : {})
+      setSettings(settingsSnap.exists() ? settingsSnap.data() : {})
       setContacts(contactSnap.docs.map(d => ({ id: d.id, ...d.data() })))
     } catch (e) {
       toast.error('Gagal memuat data')
@@ -82,6 +85,7 @@ export default function AdminDashboard() {
               {t === 'Paket Tour' && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.93" y1="4.93" x2="9.88" y2="9.88"/></svg>}
               {t === 'Armada' && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="6" width="22" height="14" rx="2" ry="2"/><path d="M16 10H4"/><circle cx="5.5" cy="17" r="2"/><circle cx="18.5" cy="17" r="2"/></svg>}
               {t === 'SEO' && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>}
+              {t === 'Pengaturan' && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>}
               {t === 'Pesan Masuk' && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2 6"/></svg>}
               {t}
               {t === 'Pesan Masuk' && contacts.filter(c => c.status === 'new').length > 0 && (
@@ -122,6 +126,7 @@ export default function AdminDashboard() {
         {tab === 'Paket Tour' && <ToursTab tours={tours} refresh={fetchAll} />}
         {tab === 'Armada' && <CarsTab cars={cars} refresh={fetchAll} />}
         {tab === 'SEO' && <SeoTab seo={seo} refresh={fetchAll} />}
+        {tab === 'Pengaturan' && <SettingsTab settings={settings} refresh={fetchAll} />}
         {tab === 'Pesan Masuk' && <ContactsTab contacts={contacts} refresh={fetchAll} />}
       </main>
     </div>
@@ -756,6 +761,106 @@ function SeoTab({ seo, refresh }) {
 
         <div className={styles.formActions}>
           <button onClick={save} className={styles.saveBtn}>Simpan SEO</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// --- Settings Tab ---
+function SettingsTab({ settings, refresh }) {
+  const [form, setForm] = useState({
+    whatsapp: settings?.whatsapp || '',
+    phone: settings?.phone || '',
+    address: settings?.address || '',
+    mapsUrl: settings?.mapsUrl || '',
+    instagram: settings?.instagram || '',
+    facebook: settings?.facebook || '',
+    logoUrl: settings?.logoUrl || '',
+    fleetHeader1: settings?.fleetHeader1 || '',
+    fleetHeader2: settings?.fleetHeader2 || '',
+    fleetHeader3: settings?.fleetHeader3 || '',
+    tourHeader1: settings?.tourHeader1 || '',
+    tourHeader2: settings?.tourHeader2 || '',
+    tourHeader3: settings?.tourHeader3 || ''
+  })
+  const [uploading, setUploading] = useState(false)
+  const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+
+  const uploadImage = async (e, fieldName) => {
+    const file = e.target.files[0]
+    if (!file) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadToCloudinary(file, 'dearma/settings')
+      if (url) {
+        setForm(p => ({ ...p, [fieldName]: url }))
+        toast.success('Gambar berhasil diupload!')
+      }
+    } catch (err) {
+      toast.error('Gagal upload: ' + err.message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const save = async () => {
+    try {
+      await setDoc(doc(db, 'settings', 'general'), { ...form, updatedAt: serverTimestamp() }, { merge: true })
+      toast.success('Pengaturan disimpan!')
+      refresh()
+    } catch (err) { 
+      toast.error('Gagal menyimpan: ' + err.message) 
+    }
+  }
+
+  return (
+    <div>
+      <div className={styles.formCard}>
+        <h3 className={styles.formCardTitle}>Pengaturan Website</h3>
+        
+        <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Kontak</h4>
+        <div className={styles.formGrid}>
+          <div className={styles.field}><label>No. WhatsApp</label><input name="whatsapp" value={form.whatsapp} onChange={handle} className={styles.inp} placeholder="6281234567890" /></div>
+          <div className={styles.field}><label>No. Telepon</label><input name="phone" value={form.phone} onChange={handle} className={styles.inp} placeholder="061-123456" /></div>
+        </div>
+        <div className={styles.field}><label>Alamat</label><textarea name="address" value={form.address} onChange={handle} className={styles.inp} rows={2} placeholder="Jl. Setia Budi No. 123, Medan" /></div>
+        <div className={styles.field}><label>Google Maps Embed URL</label><input name="mapsUrl" value={form.mapsUrl} onChange={handle} className={styles.inp} placeholder="https://www.google.com/maps/embed?..." /></div>
+
+        <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Social Media</h4>
+        <div className={styles.formGrid}>
+          <div className={styles.field}><label>Instagram</label><input name="instagram" value={form.instagram} onChange={handle} className={styles.inp} placeholder="@dearmasewamobil" /></div>
+          <div className={styles.field}><label>Facebook</label><input name="facebook" value={form.facebook} onChange={handle} className={styles.inp} placeholder="Dearma Sewa Mobil Medan" /></div>
+        </div>
+
+        <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Logo Website</h4>
+        <div className={styles.field}><label>Upload Logo</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'logoUrl')} className={styles.inp} disabled={uploading} />
+          {form.logoUrl && <img src={form.logoUrl} alt="Logo Preview" style={{ width: 150, marginTop: 8, borderRadius: 8 }} />}
+        </div>
+
+        <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Header Halaman Armada (3 Foto)</h4>
+        <div className={styles.formGrid}>
+          <div className={styles.field}><label>Foto 1</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'fleetHeader1')} className={styles.inp} disabled={uploading} />
+            {form.fleetHeader1 && <img src={form.fleetHeader1} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 2</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'fleetHeader2')} className={styles.inp} disabled={uploading} />
+            {form.fleetHeader2 && <img src={form.fleetHeader2} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 3</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'fleetHeader3')} className={styles.inp} disabled={uploading} />
+            {form.fleetHeader3 && <img src={form.fleetHeader3} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+        </div>
+
+        <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Header Halaman Paket Tour (3 Foto)</h4>
+        <div className={styles.formGrid}>
+          <div className={styles.field}><label>Foto 1</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'tourHeader1')} className={styles.inp} disabled={uploading} />
+            {form.tourHeader1 && <img src={form.tourHeader1} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 2</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'tourHeader2')} className={styles.inp} disabled={uploading} />
+            {form.tourHeader2 && <img src={form.tourHeader2} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+          <div className={styles.field}><label>Foto 3</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'tourHeader3')} className={styles.inp} disabled={uploading} />
+            {form.tourHeader3 && <img src={form.tourHeader3} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+        </div>
+
+        <div className={styles.formActions}>
+          <button onClick={save} className={styles.saveBtn}>Simpan Pengaturan</button>
         </div>
       </div>
     </div>

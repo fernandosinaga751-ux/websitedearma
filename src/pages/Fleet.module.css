@@ -13,6 +13,30 @@
   background-size: 60px 60px;
 }
 
+.headerSlider {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.slideActive {
+  opacity: 1;
+}
+
+.headerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(7,11,20,0.95) 0%, rgba(7,11,20,0.6) 100%);
+}
+
 .headerContent { position: relative; z-index: 1; }
 
 .tag {

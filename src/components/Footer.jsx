@@ -117,9 +117,6 @@ export default function Footer() {
 
         <div className={styles.bottom}>
           <p>&copy; {year} Dearma Sewa Mobil Medan. All rights reserved.</p>
-          <p className={styles.adminLink}>
-            <Link to="/admin/login">Admin</Link>
-          </p>
         </div>
       </div>
     </footer>
