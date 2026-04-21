@@ -91,7 +91,7 @@ export default function Fleet() {
                   className={styles.imageWrap}
                   onClick={() => setSelected(car)}
                 >
-                  <img src={car.image} alt={car.name} className={styles.image} loading="lazy" />
+                  <img src={car.imageUrl || car.image || '/placeholder-car.jpg'} alt={car.name} className={styles.image} loading="lazy" />
                   <div className={styles.imageOverlay}>
                     <span>Lihat Detail</span>
                   </div>
@@ -158,7 +158,7 @@ export default function Fleet() {
           <div className={styles.modalInner} onClick={e => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={() => setSelected(null)}>×</button>
             <div className={styles.modalImg}>
-              <img src={selected.image} alt={selected.name} />
+              <img src={selected.imageUrl || selected.image || '/placeholder-car.jpg'} alt={selected.name} />
             </div>
             <div className={styles.modalBody}>
               <div className={styles.category}>{selected.category}</div>

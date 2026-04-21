@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { cars, formatPrice } from '../data/cars'
+import { formatPrice, cars as staticCars } from '../data/cars'
 import styles from './Home.module.css'
 import logo from '../assets/logo.png'
 
@@ -214,7 +214,28 @@ function Features() {
 
 // === FEATURED CARS ===
 function FeaturedCars() {
-  const featured = cars.filter(c => c.popular).slice(0, 4)
+  const [dbCars, setDbCars] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const q = query(collection(db, 'cars'), orderBy('createdAt', 'desc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          setDbCars(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        }
+      } catch (e) {
+        // use static data
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCars()
+  }, [])
+
+  const carList = dbCars.length > 0 ? dbCars : staticCars
+  const featured = carList.filter(c => c.popular).slice(0, 4)
   const waBase = 'https://wa.me/6281234567890?text='
 
   return (
@@ -231,7 +252,7 @@ function FeaturedCars() {
             <div key={car.id} className={styles.carCard} style={{ animationDelay: `${i * 0.15}s` }}>
               {car.tag && <div className={styles.carTag}>{car.tag}</div>}
               <div className={styles.carImageWrap}>
-                <img src={car.image} alt={car.name} className={styles.carImage} loading="lazy" />
+                <img src={car.imageUrl || car.image} alt={car.name} className={styles.carImage} loading="lazy" />
               </div>
               <div className={styles.carInfo}>
                 <div className={styles.carCategory}>{car.category}</div>
