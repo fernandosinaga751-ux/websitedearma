@@ -810,6 +810,7 @@ function SettingsTab({ settings, refresh }) {
       await setDoc(doc(db, 'settings', 'general'), { ...form, updatedAt: serverTimestamp() }, { merge: true })
       toast.success('Pengaturan disimpan!')
       refresh()
+      window.location.reload()
     } catch (err) { 
       toast.error('Gagal menyimpan: ' + err.message) 
     }

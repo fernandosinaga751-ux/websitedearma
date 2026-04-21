@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useSettings } from '../context/SettingsContext'
 import logo from '../assets/logo.svg'
 import styles from './Navbar.module.css'
 
@@ -14,6 +15,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const { settings } = useSettings()
   const location = useLocation()
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export default function Navbar() {
     <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
         <Link to="/" className={styles.brand}>
-          <img src={logo} alt="Dearma Sewa Mobil" className={styles.logo} />
+          <img src={settings.logoUrl || logo} alt="Dearma Sewa Mobil" className={styles.logo} />
           <div className={styles.brandText}>
             <span className={styles.brandName}>DEARMA</span>
             <span className={styles.brandSub}>Sewa Mobil Medan</span>

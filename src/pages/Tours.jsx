@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { collection, getDocs, query, orderBy, getDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { useSettings } from '../context/SettingsContext'
 import { db } from '../firebase/config'
 import styles from './Tours.module.css'
 
@@ -18,22 +19,16 @@ export default function Tours() {
   const [tours, setTours] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
-  const [headerImages, setHeaderImages] = useState([])
   const [currentSlide, setCurrentSlide] = useState(0)
+  const { settings } = useSettings()
+
+  const headerImages = [settings.tourHeader1, settings.tourHeader2, settings.tourHeader3].filter(Boolean)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [toursSnap, settingsSnap] = await Promise.all([
-          getDocs(query(collection(db, 'tours'), orderBy('createdAt', 'desc'))),
-          getDoc(doc(db, 'settings', 'general'))
-        ])
+        const toursSnap = await getDocs(query(collection(db, 'tours'), orderBy('createdAt', 'desc')))
         setTours(toursSnap.docs.map(d => ({ id: d.id, ...d.data() })))
-        if (settingsSnap.exists()) {
-          const s = settingsSnap.data()
-          const images = [s.tourHeader1, s.tourHeader2, s.tourHeader3].filter(Boolean)
-          setHeaderImages(images.length > 0 ? images : [])
-        }
       } catch (e) {
         setTours([])
       } finally {

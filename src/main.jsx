@@ -4,13 +4,16 @@ import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { Toaster } from 'react-hot-toast'
 import App from './App'
+import { SettingsProvider } from './context/SettingsContext'
 import './styles/globals.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <App />
+        <SettingsProvider>
+          <App />
+        </SettingsProvider>
         <Toaster
           position="top-right"
           toastOptions={{

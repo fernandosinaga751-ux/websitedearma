@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
+import { useSettings } from '../context/SettingsContext'
 import logo from '../assets/logo.svg'
 import styles from './Footer.module.css'
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { settings } = useSettings()
+  const waNumber = settings.whatsapp || '6281234567890'
 
   return (
     <footer className={styles.footer}>
@@ -15,18 +18,18 @@ export default function Footer() {
           {/* Brand */}
           <div className={styles.brand}>
             <Link to="/" className={styles.logo}>
-              <img src={logo} alt="Dearma" />
+              <img src={settings.logoUrl || logo} alt="Dearma" />
               <div>
                 <span className={styles.name}>DEARMA</span>
                 <span className={styles.sub}>Sewa Mobil Medan</span>
               </div>
             </Link>
             <p className={styles.desc}>
-              Layanan rental mobil premium di Medan sejak 2018. Armada lengkap, sopir profesional, dan harga terjangkau untuk setiap perjalanan Anda.
+              {settings.address || 'Layanan rental mobil premium di Medan. Armada lengkap, sopir profesional, dan harga terjangkau.'}
             </p>
             <div className={styles.socials}>
               <a
-                href="https://www.instagram.com/dearmasewamobil"
+                href={settings.instagram ? `https://instagram.com/${settings.instagram.replace('@', '')}` : "https://www.instagram.com/dearmasewamobil"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.social}
@@ -39,7 +42,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.facebook.com/dearmasewamobil"
+                href={settings.facebook ? `https://facebook.com/${settings.facebook}` : "https://www.facebook.com/dearmasewamobil"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.social}
@@ -50,7 +53,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://wa.me/6281234567890"
+                href={`https://wa.me/${waNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.social}

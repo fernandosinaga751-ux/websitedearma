@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
+import { useSettings } from '../context/SettingsContext'
 import { db } from '../firebase/config'
 import { formatPrice, cars as staticCars } from '../data/cars'
 import styles from './Home.module.css'
@@ -10,9 +11,11 @@ import logo from '../assets/logo.svg'
 // === HERO SECTION ===
 function Hero() {
   const [loaded, setLoaded] = useState(false)
+  const { settings } = useSettings()
   useEffect(() => { setTimeout(() => setLoaded(true), 100) }, [])
 
-  const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent('Halo Dearma, saya ingin memesan mobil rental')}`
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Dearma, saya ingin memesan mobil rental')}`
 
   return (
     <section className={styles.hero}>
@@ -216,6 +219,7 @@ function Features() {
 function FeaturedCars() {
   const [dbCars, setDbCars] = useState([])
   const [loading, setLoading] = useState(true)
+  const { settings } = useSettings()
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -236,7 +240,8 @@ function FeaturedCars() {
 
   const carList = dbCars.length > 0 ? dbCars : staticCars
   const featured = carList.slice(0, 6)
-  const waBase = 'https://wa.me/6281234567890?text='
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waBase = `https://wa.me/${waNumber}?text=`
 
   return (
     <section className={styles.featuredCars}>
@@ -382,6 +387,8 @@ function Testimonials() {
 
 // === GOOGLE MAPS SECTION ===
 function Location() {
+  const { settings } = useSettings()
+  
   return (
     <section className={styles.location}>
       <div className="container">
@@ -398,7 +405,7 @@ function Location() {
                 </svg>
                 <div>
                   <strong>Alamat</strong>
-                  <p>Jl. Setia Budi No. 123, Medan Selayang,<br />Kota Medan, Sumatera Utara 20131</p>
+                  <p>{settings.address || 'Jl. Setia Budi No. 123, Medan Selayang, Kota Medan, Sumatera Utara 20131'}</p>
                 </div>
               </div>
               <div className={styles.locItem}>
@@ -407,8 +414,8 @@ function Location() {
                   <path d="M1 1l22 22"/>
                 </svg>
                 <div>
-                  <strong>Telepon / WhatsApp</strong>
-                  <p>0812-3456-7890</p>
+                  <strong>WhatsApp</strong>
+                  <p>{settings.whatsapp ? `+${settings.whatsapp}` : '0812-3456-7890'}</p>
                 </div>
               </div>
               <div className={styles.locItem}>
@@ -423,7 +430,7 @@ function Location() {
               </div>
             </div>
             <a
-              href="https://goo.gl/maps/medan"
+              href={settings.mapsUrl || 'https://goo.gl/maps/medan'}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-gold"
@@ -438,7 +445,7 @@ function Location() {
           <div className={styles.mapContainer}>
             <iframe
               title="Lokasi Dearma Sewa Mobil Medan"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127620.55596369584!2d98.61496427285156!3d3.5896654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031741c9af9f7bf%3A0x38d6e2a97c26a9e0!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+              src={settings.mapsUrl?.replace('/embed?url=', '/embed?pb=') || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127620.55596369584!2d98.61496427285156!3d3.5896654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031741c9af9f7bf%3A0x38d6e2a97c26a9e0!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid'}
               width="100%"
               height="100%"
               style={{ border: 0, borderRadius: '16px' }}
@@ -518,7 +525,9 @@ function ArticlesPreview() {
 
 // === CTA SECTION ===
 function CTA() {
-  const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent('Halo Dearma, saya ingin konsultasi tentang rental mobil')}`
+  const { settings } = useSettings()
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Dearma, saya ingin konsultasi tentang rental mobil')}`
   return (
     <section className={styles.cta}>
       <div className={styles.ctaOrb1} />

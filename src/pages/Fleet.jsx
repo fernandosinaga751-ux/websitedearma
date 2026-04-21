@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { collection, getDocs, query, orderBy, getDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { useSettings } from '../context/SettingsContext'
 import { db } from '../firebase/config'
 import { formatPrice } from '../data/cars'
 import { cars as staticCars } from '../data/cars'
@@ -13,23 +14,17 @@ export default function Fleet() {
   const [selected, setSelected] = useState(null)
   const [dbCars, setDbCars] = useState([])
   const [loading, setLoading] = useState(true)
-  const [headerImages, setHeaderImages] = useState([])
   const [currentSlide, setCurrentSlide] = useState(0)
+  const { settings } = useSettings()
+
+  const headerImages = [settings.fleetHeader1, settings.fleetHeader2, settings.fleetHeader3].filter(Boolean)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [carsSnap, settingsSnap] = await Promise.all([
-          getDocs(query(collection(db, 'cars'), orderBy('createdAt', 'desc'))),
-          getDoc(doc(db, 'settings', 'general'))
-        ])
+        const carsSnap = await getDocs(query(collection(db, 'cars'), orderBy('createdAt', 'desc')))
         if (!carsSnap.empty) {
           setDbCars(carsSnap.docs.map(d => ({ id: d.id, ...d.data() })))
-        }
-        if (settingsSnap.exists()) {
-          const s = settingsSnap.data()
-          const images = [s.fleetHeader1, s.fleetHeader2, s.fleetHeader3].filter(Boolean)
-          setHeaderImages(images.length > 0 ? images : [])
         }
       } catch (e) {
         // use static data on error
