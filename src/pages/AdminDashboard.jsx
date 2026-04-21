@@ -9,7 +9,7 @@ import { auth, db } from '../firebase/config'
 import { uploadToCloudinary } from '../utils/cloudinary'
 import { seedCarsToFirebase } from '../utils/seedData'
 import toast from 'react-hot-toast'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.svg'
 import styles from './AdminDashboard.module.css'
 
 const TABS = ['Dashboard', 'Artikel', 'Testimoni', 'Paket Tour', 'Armada', 'SEO', 'Pesan Masuk']

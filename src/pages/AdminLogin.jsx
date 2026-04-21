@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase/config'
 import toast from 'react-hot-toast'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.svg'
 import styles from './AdminLogin.module.css'
 
 export default function AdminLogin() {

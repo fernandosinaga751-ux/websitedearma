@@ -5,7 +5,7 @@ import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { formatPrice, cars as staticCars } from '../data/cars'
 import styles from './Home.module.css'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.svg'
 
 // === HERO SECTION ===
 function Hero() {
