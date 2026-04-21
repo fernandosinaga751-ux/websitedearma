@@ -94,6 +94,57 @@
   50% { transform: scale(1.2); opacity: 1; }
 }
 
+/* Hero Slider */
+.heroSlides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroSlide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.heroSlideActive {
+  opacity: 1;
+}
+
+.slideDots {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.slideDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.6);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.slideDot:hover {
+  border-color: #c9a227;
+}
+
+.slideDotActive {
+  background: #c9a227;
+  border-color: #c9a227;
+  transform: scale(1.2);
+}
+
 .heroContent {
   position: relative;
   z-index: 2;

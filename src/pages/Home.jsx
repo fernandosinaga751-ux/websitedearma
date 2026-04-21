@@ -11,45 +11,90 @@ import logo from '../assets/logo.svg'
 // === HERO SECTION ===
 function Hero() {
   const [loaded, setLoaded] = useState(false)
+  const [currentSlide, setCurrentSlide] = useState(0)
   const { settings } = useSettings()
   useEffect(() => { setTimeout(() => setLoaded(true), 100) }, [])
+
+  const headerImages = [
+    settings.homeHeader1,
+    settings.homeHeader2,
+    settings.homeHeader3,
+    settings.homeHeader4,
+    settings.homeHeader5
+  ].filter(Boolean)
+
+  useEffect(() => {
+    if (headerImages.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentSlide(p => (p + 1) % headerImages.length)
+      }, 5000)
+      return () => clearInterval(interval)
+    }
+  }, [headerImages.length])
 
   const waNumber = settings.whatsapp || '6281234567890'
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Dearma, saya ingin memesan mobil rental')}`
 
   return (
     <section className={styles.hero}>
-      {/* Animated road lines */}
-      <div className={styles.road}>
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className={styles.roadLine} style={{ animationDelay: `${i * 0.4}s` }} />
-        ))}
-      </div>
+      {/* Photo Slider */}
+      {headerImages.length > 0 ? (
+        <div className={styles.heroSlides}>
+          {headerImages.map((img, idx) => (
+            <div
+              key={idx}
+              className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
+              style={{ backgroundImage: `url(${img})` }}
+            />
+          ))}
+          {headerImages.length > 1 && (
+            <div className={styles.slideDots}>
+              {headerImages.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`${styles.slideDot} ${idx === currentSlide ? styles.slideDotActive : ''}`}
+                  onClick={() => setCurrentSlide(idx)}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Animated road lines */}
+          <div className={styles.road}>
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className={styles.roadLine} style={{ animationDelay: `${i * 0.4}s` }} />
+            ))}
+          </div>
 
-      {/* Floating particles */}
-      <div className={styles.particles}>
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className={styles.particle}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 4}s`,
-              width: `${2 + Math.random() * 3}px`,
-              height: `${2 + Math.random() * 3}px`
-            }}
-          />
-        ))}
-      </div>
+          {/* Floating particles */}
+          <div className={styles.particles}>
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className={styles.particle}
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${3 + Math.random() * 4}s`,
+                  width: `${2 + Math.random() * 3}px`,
+                  height: `${2 + Math.random() * 3}px`
+                }}
+              />
+            ))}
+          </div>
 
-      {/* Grid overlay */}
-      <div className={styles.grid} />
+          {/* Grid overlay */}
+          <div className={styles.grid} />
 
-      {/* Glow orbs */}
-      <div className={styles.orb1} />
-      <div className={styles.orb2} />
+          {/* Glow orbs */}
+          <div className={styles.orb1} />
+          <div className={styles.orb2} />
+        </>
+      )}
 
       <div className={`${styles.heroContent} ${loaded ? styles.loaded : ''}`}>
         <div className={styles.badge}>
