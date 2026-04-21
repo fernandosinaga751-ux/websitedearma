@@ -405,7 +405,7 @@ function Location() {
                 </svg>
                 <div>
                   <strong>Alamat</strong>
-                  <a href={settings.mapsUrl || 'https://goo.gl/maps/medan'} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a227', textDecoration: 'underline' }}>
+                  <a href={settings.mapsUrl ? (settings.mapsUrl.includes('maps/embed') ? settings.mapsUrl : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.mapsUrl)}`) : 'https://goo.gl/maps/medan'} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a227', textDecoration: 'underline' }}>
                     {settings.address || 'Jl. Setia Budi No. 123, Medan Selayang, Kota Medan, Sumatera Utara 20131'}
                   </a>
                 </div>
@@ -447,7 +447,7 @@ function Location() {
           <div className={styles.mapContainer}>
             <iframe
               title="Lokasi Dearma Sewa Mobil Medan"
-              src={settings.mapsUrl?.replace('/embed?url=', '/embed?pb=') || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127620.55596369584!2d98.61496427285156!3d3.5896654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031741c9af9f7bf%3A0x38d6e2a97c26a9e0!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid'}
+              src={settings.mapsUrl?.includes('maps/embed') ? settings.mapsUrl : 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127620.55596369584!2d98.61496427285156!3d3.5896654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031741c9af9f7bf%3A0x38d6e2a97c26a9e0!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid'}
               width="100%"
               height="100%"
               style={{ border: 0, borderRadius: '16px' }}
