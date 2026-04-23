@@ -61,39 +61,9 @@ function Hero() {
           )}
         </div>
       ) : (
-        <>
-          {/* Animated road lines */}
-          <div className={styles.road}>
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className={styles.roadLine} style={{ animationDelay: `${i * 0.4}s` }} />
-            ))}
-          </div>
-
-          {/* Floating particles */}
-          <div className={styles.particles}>
-            {[...Array(20)].map((_, i) => (
-              <div
-                key={i}
-                className={styles.particle}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${3 + Math.random() * 4}s`,
-                  width: `${2 + Math.random() * 3}px`,
-                  height: `${2 + Math.random() * 3}px`
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Grid overlay */}
-          <div className={styles.grid} />
-
-          {/* Glow orbs */}
-          <div className={styles.orb1} />
-          <div className={styles.orb2} />
-        </>
+        <div className={styles.heroSlides}>
+          <div className={styles.heroSlide} style={{ backgroundImage: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
+        </div>
       )}
 
       <div className={`${styles.heroContent} ${loaded ? styles.loaded : ''}`}>
