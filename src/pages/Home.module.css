@@ -11,15 +11,28 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  aspect-ratio: 1357 / 603;
+  height: 500px; /* Desktop */
   overflow: hidden;
   background: #000;
   padding-top: 80px; /* offset fixed navbar */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .heroSlider {
+    height: 380px; /* Tablet */
+  }
+}
+
+@media (max-width: 600px) {
+  .heroSlider {
+    height: 230px; /* Mobile */
     padding-top: 70px;
+  }
+}
+
+@media (max-width: 400px) {
+  .heroSlider {
+    height: 200px; /* Small mobile */
   }
 }
 
