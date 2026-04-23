@@ -403,39 +403,85 @@ function ContactsTab({ contacts, refresh }) {
 
 // --- Tours Tab ---
 function ToursTab({ tours, refresh }) {
-  const [form, setForm] = useState({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1', notes: '', location: '', faq: '' })
+  const [form, setForm] = useState({ 
+    name: '', 
+    description: '', 
+    price: '', 
+    duration: '', 
+    included: '', 
+    excluded: '', 
+    imageUrl: '', 
+    tag: '', 
+    itinerary: '', 
+    minParticipants: '1', 
+    notes: '', 
+    location: '', 
+    faq: '',
+    paxPricing: [] // { pax: number, price: number, carType: string }[]
+  })
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [uploading, setUploading] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
-  const onImageChange = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    
-    setUploading(true)
-    try {
-      const url = await uploadToCloudinary(file, 'dearma/tours')
-      if (url) {
-        setForm(p => ({ ...p, imageUrl: url }))
-        toast.success('Gambar berhasil diupload!')
-      }
-    } catch (err) {
-      toast.error('Gagal upload gambar: ' + err.message)
-    } finally {
-      setUploading(false)
-    }
-  }
+   const onImageChange = async (e) => {
+     const file = e.target.files[0]
+     if (!file) return
+     
+     setUploading(true)
+     try {
+       const url = await uploadToCloudinary(file, 'dearma/tours')
+       if (url) {
+         setForm(p => ({ ...p, imageUrl: url }))
+         toast.success('Gambar berhasil diupload!')
+       }
+     } catch (err) {
+       toast.error('Gagal upload gambar: ' + err.message)
+     } finally {
+       setUploading(false)
+     }
+   }
+
+   const addPaxPricing = () => {
+     setForm(p => ({
+       ...p,
+       paxPricing: [...(p.paxPricing || []), { pax: 1, price: '', carType: 'Avanza' }]
+     }))
+   }
+
+   const removePaxPricing = (index) => {
+     setForm(p => ({
+       ...p,
+       paxPricing: p.paxPricing.filter((_, i) => i !== index)
+     }))
+   }
+
+   const updatePaxPricing = (index, field, value) => {
+     setForm(p => ({
+       ...p,
+       paxPricing: p.paxPricing.map((item, i) => 
+         i === index ? { 
+           ...item, 
+           [field]: field === 'pax' || field === 'price' ? Number(value) : value 
+         } : item
+       )
+     }))
+   }
 
   const save = async (e) => {
     e.preventDefault()
-    if (!form.name || !form.price) { toast.error('Nama dan harga wajib diisi!'); return }
+    if (!form.name) { toast.error('Nama paket wajib diisi!'); return }
     try {
       console.log('Saving tour data:', form)
       const data = { 
         ...form, 
-        price: Number(form.price), 
+        price: Number(form.price) || 0,
         minParticipants: Number(form.minParticipants) || 1,
+        paxPricing: form.paxPricing.map(p => ({
+          ...p,
+          pax: Number(p.pax),
+          price: Number(p.price)
+        })),
         updatedAt: serverTimestamp() 
       }
       if (editing) {
@@ -460,32 +506,37 @@ function ToursTab({ tours, refresh }) {
     toast.success('Dihapus!'); refresh()
   }
 
-  const edit = t => {
-    setForm({ 
-      name: t.name || '', 
-      description: t.description || '', 
-      price: t.price?.toString() || '', 
-      duration: t.duration || '', 
-      included: t.included || '', 
-      excluded: t.excluded || '', 
-      imageUrl: t.imageUrl || '', 
-      tag: t.tag || '',
-      itinerary: t.itinerary || '',
-      minParticipants: t.minParticipants?.toString() || '1',
-      notes: t.notes || '',
-      location: t.location || '',
-      faq: t.faq || ''
-    })
-    setEditing(t.id); setShowForm(true)
-  }
+   const edit = t => {
+     setForm({ 
+       name: t.name || '', 
+       description: t.description || '', 
+       price: t.price?.toString() || '', 
+       duration: t.duration || '', 
+       included: t.included || '', 
+       excluded: t.excluded || '', 
+       imageUrl: t.imageUrl || '', 
+       tag: t.tag || '',
+       itinerary: t.itinerary || '',
+       minParticipants: t.minParticipants?.toString() || '1',
+       notes: t.notes || '',
+       location: t.location || '',
+       faq: t.faq || '',
+       paxPricing: t.paxPricing ? t.paxPricing.map(p => ({
+         pax: p.pax,
+         price: p.price,
+         carType: p.carType
+       })) : []
+     })
+     setEditing(t.id); setShowForm(true)
+   }
 
   return (
     <div>
-      <div className={styles.tabHeader}>
-        <button className={styles.addBtn} onClick={() => { setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1' }); setEditing(null); setShowForm(true) }}>
-          + Tambah Paket Tour
-        </button>
-      </div>
+       <div className={styles.tabHeader}>
+         <button className={styles.addBtn} onClick={() => { setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1', notes: '', location: '', faq: '', paxPricing: [] }); setEditing(null); setShowForm(true) }}>
+           + Tambah Paket Tour
+         </button>
+       </div>
 
       {showForm && (
         <div className={styles.formCard}>
@@ -505,6 +556,63 @@ function ToursTab({ tours, refresh }) {
             </div>
             <div className={styles.field}><label>Termasuk (satu per baris)</label><textarea name="included" value={form.included} onChange={handle} className={styles.inp} rows={3} placeholder="Tiket masuk&#10;Hotel&#10;Sopir & mobil" /></div>
             <div className={styles.field}><label>Tidak Termasuk (satu per baris)</label><textarea name="excluded" value={form.excluded} onChange={handle} className={styles.inp} rows={2} placeholder="Makanan&#10;Tiket masuk objek wisata tambahan" /></div>
+
+            <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Harga Berdasarkan Jumlah Orang & Jenis Mobil</h4>
+            <div className={styles.field} style={{ marginBottom: '12px' }}>
+              <label>Harga Dasar (Rp) - untuk 1 org</label>
+              <input name="price" type="number" value={form.price} onChange={handle} className={styles.inp} placeholder="500000" />
+              <small style={{ color: '#6b7280', fontSize: '0.85rem' }}>* Harga per orang untuk 1 participant</small>
+            </div>
+            <div className={styles.paxPricingGrid}>
+              {form.paxPricing && form.paxPricing.map((item, idx) => (
+                <div key={idx} className={styles.paxPricingItem}>
+                  <div className={styles.paxPricingHeader}>
+                    <span>Harga untuk {item.pax} org</span>
+                    <button type="button" onClick={() => removePaxPricing(idx)} className={styles.removePaxBtn}>×</button>
+                  </div>
+                  <div className={styles.paxPricingFields}>
+                    <div className={styles.field}>
+                      <label>Jumlah Org</label>
+                      <input 
+                        type="number" 
+                        value={item.pax} 
+                        onChange={(e) => updatePaxPricing(idx, 'pax', e.target.value)}
+                        className={styles.inp}
+                        min="1"
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Harga (Rp)</label>
+                      <input 
+                        type="number" 
+                        value={item.price} 
+                        onChange={(e) => updatePaxPricing(idx, 'price', e.target.value)}
+                        className={styles.inp}
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Jenis Mobil</label>
+                      <select 
+                        value={item.carType} 
+                        onChange={(e) => updatePaxPricing(idx, 'carType', e.target.value)}
+                        className={styles.inp}
+                      >
+                        <option value="Avanza">Avanza</option>
+                        <option value="Innova">Innova</option>
+                        <option value="Hiace">Hiace</option>
+                        <option value="Alphard">Alphard</option>
+                        <option value="Fortuner">Fortuner</option>
+                        <option value="Pajero">Pajero</option>
+                        <option value="Hiace Premio">Hiace Premio</option>
+                        <option value="Alphard HEV">Alphard HEV</option>
+                        <option value="Innova Zenix">Innova Zenix</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={addPaxPricing} className={styles.addPaxBtn}>+ Tambah Harga untuk Jumlah Lain</button>
+            </div>
 
             <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Informasi Tambahan</h4>
             <div className={styles.field}><label>Catatan</label><textarea name="notes" value={form.notes} onChange={handle} className={styles.inp} rows={3} placeholder="Informasi tambahan untuk pelanggan..." /></div>

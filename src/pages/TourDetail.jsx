@@ -25,6 +25,7 @@ export default function TourDetail() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('informasi')
   const [paxCount, setPaxCount] = useState(1)
+  const [selectedCar, setSelectedCar] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +33,12 @@ export default function TourDetail() {
         const docRef = doc(db, 'tours', id)
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
-          setTour({ id: docSnap.id, ...docSnap.data() })
+          const tourData = { id: docSnap.id, ...docSnap.data() }
+          setTour(tourData)
+          // Set initial car type if paxPricing exists
+          if (tourData.paxPricing && tourData.paxPricing.length > 0) {
+            setSelectedCar(tourData.paxPricing[0].carType)
+          }
         } else {
           navigate('/paket-wisata')
           return
@@ -51,9 +57,35 @@ export default function TourDetail() {
   }, [id, navigate])
 
   const waBase = 'https://wa.me/6281234567890?text='
-  const totalPrice = (tour?.price || 0) * paxCount
 
-  const waMessage = `Halo Dearma, saya tertarik dengan paket tour *${tour?.name || ''}*.\n\nDurasi: ${tour?.duration || '-'}\nJumlah Orang: ${paxCount}\nHarga total: ${formatPrice(totalPrice)}\n\nMohon info ketersediaan dan jadwal terdekat.`
+  // Calculate price based on pax count and car type
+  const getPriceForPax = (pax, carType) => {
+    if (!tour?.paxPricing || !Array.isArray(tour.paxPricing)) {
+      return tour?.price ? tour.price * pax : null
+    }
+
+    // Find matching pricing entry for exact pax count
+    const exactMatch = tour.paxPricing.find(p => p.pax === pax && (!carType || p.carType === carType))
+    if (exactMatch) return exactMatch.price * pax
+
+    // Find closest lower pax
+    const sorted = [...tour.paxPricing].sort((a, b) => a.pax - b.pax)
+    const closest = sorted.filter(p => p.pax <= pax).pop() || sorted[0]
+    return closest.price * pax
+  }
+
+  const currentPrice = getPriceForPax(paxCount, selectedCar)
+
+  // Get available car types for current pax
+  const getAvailableCarTypes = () => {
+    if (!tour?.paxPricing) return []
+    const types = [...new Set(tour.paxPricing.map(p => p.carType))]
+    return types
+  }
+
+  const availableCars = getAvailableCarTypes()
+
+  const waMessage = `Halo Dearma, saya tertarik dengan paket tour *${tour?.name || ''}*.\n\nDurasi: ${tour?.duration || '-'}\nJumlah Orang: ${paxCount}\nJenis Mobil: ${selectedCar || 'Avanza'}\nHarga total: ${formatPrice(currentPrice)}\n\nMohon info ketersediaan dan jadwal terdekat.`
 
   if (loading) {
     return (
@@ -232,6 +264,76 @@ export default function TourDetail() {
                 <div className={styles.priceDisplay}>
                   <span className={styles.priceLabel}>Per orang</span>
                   <span className={styles.priceValue}>{formatPrice(tour.price)}</span>
+                </div>
+
+                <div className={styles.paxSelector}>
+                  <label htmlFor="paxCount">Jumlah Orang</label>
+                  <select
+                    id="paxCount"
+                    value={paxCount}
+                    onChange={e => setPaxCount(Number(e.target.value))}
+                    className={styles.paxSelect}
+                  >
+                    {[...Array(10)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1} orang</option>
+                    ))}
+                  </select>
+                </div>
+
+                {availableCars.length > 1 && (
+                  <div className={styles.paxSelector}>
+                    <label htmlFor="carType">Jenis Mobil</label>
+                    <select
+                      id="carType"
+                      value={selectedCar}
+                      onChange={e => setSelectedCar(e.target.value)}
+                      className={styles.paxSelect}
+                    >
+                      {availableCars.map(car => (
+                        <option key={car} value={car}>{car}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div className={styles.totalPrice}>
+                  <span>Total ({paxCount} orang):</span>
+                  <strong>{formatPrice(currentPrice)}</strong>
+                </div>
+
+                <div className={styles.paxSelector}>
+                  <label htmlFor="paxCount">Jumlah Orang</label>
+                  <select
+                    id="paxCount"
+                    value={paxCount}
+                    onChange={e => setPaxCount(Number(e.target.value))}
+                    className={styles.paxSelect}
+                  >
+                    {[...Array(10)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1} orang</option>
+                    ))}
+                  </select>
+                </div>
+
+                {availableCars.length > 1 && (
+                  <div className={styles.paxSelector}>
+                    <label htmlFor="carType">Jenis Mobil</label>
+                    <select
+                      id="carType"
+                      value={selectedCar}
+                      onChange={e => setSelectedCar(e.target.value)}
+                      className={styles.paxSelect}
+                    >
+                      {availableCars.map(car => (
+                        <option key={car} value={car}>{car}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div className={styles.totalPrice}>
+                  <span>Total ({paxCount} orang):</span>
+                  <strong>{formatPrice(currentPrice)}</strong>
                 </div>
 
                 <div className={styles.paxSelector}>
