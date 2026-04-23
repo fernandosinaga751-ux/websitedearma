@@ -36,17 +36,19 @@ function Hero() {
 
   return (
     <section className={styles.hero}>
-      {/* Photo Slider Background */}
+      {/* Photo Slider Background - Aspect 16:9 Landscape */}
       {headerImages.length > 0 ? (
-        <div className={styles.heroSlides}>
-          {headerImages.map((img, idx) => (
-            <div
-              key={idx}
-              className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
-            >
-              <img src={img} alt={`Slide ${idx + 1}`} className={styles.heroSlideImg} />
-            </div>
-          ))}
+        <div className={styles.heroSliderContainer}>
+          <div className={styles.heroSlides}>
+            {headerImages.map((img, idx) => (
+              <div
+                key={idx}
+                className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
+              >
+                <img src={img} alt={`Slide ${idx + 1}`} className={styles.heroSlideImg} />
+              </div>
+            ))}
+          </div>
           {headerImages.length > 1 && (
             <div className={styles.slideDots}>
               {headerImages.map((_, idx) => (
@@ -61,8 +63,10 @@ function Hero() {
           )}
         </div>
       ) : (
-        <div className={styles.heroSlides}>
-          <div className={styles.heroSlide} style={{ background: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
+        <div className={styles.heroSliderContainer}>
+          <div className={styles.heroSlides}>
+            <div className={styles.heroSlide} style={{ background: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
+          </div>
         </div>
       )}
 
