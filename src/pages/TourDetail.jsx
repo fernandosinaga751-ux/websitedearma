@@ -60,16 +60,23 @@ export default function TourDetail() {
 
   // Calculate price based on pax count and car type
   const getPriceForPax = (pax, carType) => {
-    if (!tour?.paxPricing || !Array.isArray(tour.paxPricing)) {
-      return tour?.price ? tour.price * pax : null
+    if (!tour?.paxPricing || !Array.isArray(tour.paxPricing) || tour.paxPricing.length === 0) {
+      return tour?.price ? tour.price * pax : 0
+    }
+
+    // Filter by car type if specified
+    let pricingList = tour.paxPricing
+    if (carType) {
+      pricingList = pricingList.filter(p => p.carType === carType)
+      if (pricingList.length === 0) pricingList = tour.paxPricing
     }
 
     // Find matching pricing entry for exact pax count
-    const exactMatch = tour.paxPricing.find(p => p.pax === pax && (!carType || p.carType === carType))
+    const exactMatch = pricingList.find(p => p.pax === pax)
     if (exactMatch) return exactMatch.price * pax
 
     // Find closest lower pax
-    const sorted = [...tour.paxPricing].sort((a, b) => a.pax - b.pax)
+    const sorted = [...pricingList].sort((a, b) => a.pax - b.pax)
     const closest = sorted.filter(p => p.pax <= pax).pop() || sorted[0]
     return closest.price * pax
   }
@@ -280,7 +287,7 @@ export default function TourDetail() {
                   </select>
                 </div>
 
-                {availableCars.length > 1 && (
+                {availableCars.length > 0 && availableCars.length > 1 && (
                   <div className={styles.paxSelector}>
                     <label htmlFor="carType">Jenis Mobil</label>
                     <select
@@ -296,64 +303,12 @@ export default function TourDetail() {
                   </div>
                 )}
 
-                <div className={styles.totalPrice}>
-                  <span>Total ({paxCount} orang):</span>
-                  <strong>{formatPrice(currentPrice)}</strong>
-                </div>
-
-                <div className={styles.paxSelector}>
-                  <label htmlFor="paxCount">Jumlah Orang</label>
-                  <select
-                    id="paxCount"
-                    value={paxCount}
-                    onChange={e => setPaxCount(Number(e.target.value))}
-                    className={styles.paxSelect}
-                  >
-                    {[...Array(10)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>{i + 1} orang</option>
-                    ))}
-                  </select>
-                </div>
-
-                {availableCars.length > 1 && (
-                  <div className={styles.paxSelector}>
-                    <label htmlFor="carType">Jenis Mobil</label>
-                    <select
-                      id="carType"
-                      value={selectedCar}
-                      onChange={e => setSelectedCar(e.target.value)}
-                      className={styles.paxSelect}
-                    >
-                      {availableCars.map(car => (
-                        <option key={car} value={car}>{car}</option>
-                      ))}
-                    </select>
+                {currentPrice && (
+                  <div className={styles.totalPrice}>
+                    <span>Total ({paxCount} orang):</span>
+                    <strong>{formatPrice(currentPrice)}</strong>
                   </div>
                 )}
-
-                <div className={styles.totalPrice}>
-                  <span>Total ({paxCount} orang):</span>
-                  <strong>{formatPrice(currentPrice)}</strong>
-                </div>
-
-                <div className={styles.paxSelector}>
-                  <label htmlFor="paxCount">Jumlah Orang</label>
-                  <select
-                    id="paxCount"
-                    value={paxCount}
-                    onChange={e => setPaxCount(Number(e.target.value))}
-                    className={styles.paxSelect}
-                  >
-                    {[...Array(10)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>{i + 1} orang</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.totalPrice}>
-                  <span>Total:</span>
-                  <strong>{formatPrice(totalPrice)}</strong>
-                </div>
 
                 <a
                   href={`${waBase}${encodeURIComponent(waMessage)}`}
@@ -394,7 +349,7 @@ export default function TourDetail() {
       <div className={styles.mobileBottomBar}>
         <div className={styles.mobilePriceInfo}>
           <span>Total ({paxCount} orang):</span>
-          <strong>{formatPrice(totalPrice)}</strong>
+          <strong>{formatPrice(currentPrice)}</strong>
         </div>
         <a href={`${waBase}${encodeURIComponent(waMessage)}`} className={styles.mobileBookBtn}>
           Booking
