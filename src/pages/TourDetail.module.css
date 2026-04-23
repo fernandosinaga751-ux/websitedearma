@@ -92,6 +92,46 @@
   color: #c9a227;
 }
 
+/* Sticky Tabs */
+.stickyTabs {
+  position: sticky;
+  top: 70px;
+  z-index: 50;
+  background: #141414;
+  border-bottom: 2px solid #222;
+}
+
+.tabsList {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 20px;
+}
+
+.tabBtn {
+  flex-shrink: 0;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: #9ca3af;
+  transition: all 0.3s;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: #c9a227;
+}
+
+.tabActive {
+  color: #c9a227;
+  border-bottom-color: #c9a227;
+}
+
+/* Content Layout */
 .content {
   padding: 60px 0;
   background: #0a0a0a;
@@ -113,6 +153,13 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.section {
+  background: #141414;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #222;
 }
 
 .section h2 {
@@ -139,7 +186,7 @@
   display: flex;
   gap: 16px;
   padding: 16px;
-  background: #141414;
+  background: #0a0a0a;
   border-radius: 8px;
 }
 
@@ -159,6 +206,7 @@
 .itineraryItem p {
   color: #9ca3af;
   line-height: 1.6;
+  margin: 0;
 }
 
 .notes, .locationText {
@@ -174,7 +222,7 @@
 }
 
 .faqItem {
-  background: #141414;
+  background: #0a0a0a;
   padding: 16px;
   border-radius: 8px;
   border-left: 3px solid #c9a227;
@@ -186,48 +234,23 @@
   margin-bottom: 8px;
 }
 
-.faqItem p {
-  color: #9ca3af;
-  font-weight: normal;
-  font-size: 0.95rem;
+.inclusion {
+  margin-top: 24px;
 }
 
-.priceBox {
-  background: #141414;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid #c9a227;
+.inclusion h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
 }
 
-.priceMain {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.priceBox .priceLabel {
-  font-size: 1rem;
-  color: #9ca3af;
-}
-
-.priceBox .priceValue {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #c9a227;
-}
-
-.priceBox .priceValue small {
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.includesList, .excludesList {
+.inclusion ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.includesList li, .excludesList li {
+.inclusion li {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -236,30 +259,27 @@
   color: #9ca3af;
 }
 
-.includesList .checkIcon {
+.checkIcon {
   color: #22c55e;
   font-weight: bold;
 }
 
-.excludesList .crossIcon {
+.crossIcon {
   color: #ef4444;
   font-weight: bold;
 }
 
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.bookingCard, .infoCard {
+/* Sidebar */
+.bookingCard {
   background: #141414;
   border-radius: 12px;
   padding: 24px;
   border: 1px solid #222;
+  position: sticky;
+  top: 100px;
 }
 
-.bookingCard h3, .infoCard h3 {
+.bookingCard h3 {
   color: #fff;
   font-size: 1.1rem;
   margin-bottom: 20px;
@@ -285,6 +305,52 @@
   color: #c9a227;
 }
 
+.paxSelector {
+  margin-bottom: 16px;
+}
+
+.paxSelector label {
+  display: block;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.paxSelect {
+  width: 100%;
+  padding: 10px 12px;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.paxSelect:focus {
+  outline: none;
+  border-color: #c9a227;
+}
+
+.totalPrice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #222;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.totalPrice span {
+  color: #9ca3af;
+}
+
+.totalPrice strong {
+  color: #c9a227;
+  font-weight: 700;
+}
+
 .bookBtn {
   display: flex;
   align-items: center;
@@ -304,13 +370,6 @@
 .bookBtn:hover {
   background: #ddb82e;
   transform: translateY(-2px);
-}
-
-.note {
-  text-align: center;
-  color: #6b7280;
-  font-size: 0.85rem;
-  margin-top: 16px;
 }
 
 .shareSection {
@@ -351,6 +410,7 @@
   color: #000;
 }
 
+/* Other Tours */
 .otherToursGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -417,53 +477,45 @@
   font-weight: 500;
 }
 
-.infoItem {
-  display: flex;
+/* Mobile Bottom Bar */
+.mobileBottomBar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #141414;
+  padding: 12px 5%;
+  z-index: 100;
+  border-top: 1px solid #222;
+  align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #222;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
 }
 
-.infoItem:last-child {
-  border-bottom: none;
-}
-
-.infoLabel {
+.mobilePriceInfo {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
   color: #9ca3af;
 }
 
-.infoValue {
-  color: #fff;
-  font-weight: 500;
+.mobilePriceInfo strong {
+  color: #c9a227;
+  font-size: 1.1rem;
 }
 
-.ctaSection {
-  padding: 60px 0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-  text-align: center;
-}
-
-.ctaSection h2 {
-  font-size: 2rem;
-  color: #fff;
-  margin-bottom: 12px;
-}
-
-.ctaSection p {
-  color: #9ca3af;
-  margin-bottom: 24px;
-}
-
-.ctaBtn {
-  display: inline-flex;
-  padding: 14px 32px;
+.mobileBookBtn {
   background: #c9a227;
   color: #000;
-  text-decoration: none;
+  padding: 12px 32px;
   border-radius: 8px;
+  text-decoration: none;
   font-weight: 600;
+  font-size: 1rem;
 }
 
+/* Responsive */
 @media (max-width: 1024px) {
   .tourGrid {
     grid-template-columns: 1fr;
@@ -471,19 +523,42 @@
 
   .tourSidebar {
     order: -1;
+    position: static;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
+  .mobileBottomBar {
+    display: flex;
+  }
+
+  .tourGrid {
+    grid-template-columns: 1fr !important;
+    padding: 1rem 4% !important;
+  }
+
+  .tourSidebar {
+    order: 0;
+    position: static !important;
+  }
+
   .hero {
-    height: 350px;
+    height: 240px !important;
   }
-  
-  .title {
-    font-size: 1.8rem;
+
+  .tabBtn {
+    padding: .75rem .8rem !important;
+    font-size: .78rem !important;
   }
-  
-  .content {
-    padding: 40px 0;
+}
+
+@media (max-width: 480px) {
+  .mobileBottomBar {
+    padding: 10px 4%;
+  }
+
+  .mobileBookBtn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
   }
 }

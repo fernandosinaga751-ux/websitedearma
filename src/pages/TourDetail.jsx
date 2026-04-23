@@ -23,6 +23,8 @@ export default function TourDetail() {
   const [tour, setTour] = useState(null)
   const [otherTours, setOtherTours] = useState([])
   const [loading, setLoading] = useState(true)
+  const [tab, setTab] = useState('informasi')
+  const [paxCount, setPaxCount] = useState(1)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +51,9 @@ export default function TourDetail() {
   }, [id, navigate])
 
   const waBase = 'https://wa.me/6281234567890?text='
+  const totalPrice = (tour?.price || 0) * paxCount
+
+  const waMessage = `Halo Dearma, saya tertarik dengan paket tour *${tour?.name || ''}*.\n\nDurasi: ${tour?.duration || '-'}\nJumlah Orang: ${paxCount}\nHarga total: ${formatPrice(totalPrice)}\n\nMohon info ketersediaan dan jadwal terdekat.`
 
   if (loading) {
     return (
@@ -65,6 +70,14 @@ export default function TourDetail() {
   }
 
   if (!tour) return null
+
+  const tabs = [
+    { id: 'informasi', label: 'Informasi' },
+    { id: 'itinerary', label: 'Itinerary', show: tour.itinerary },
+    { id: 'catatan', label: 'Catatan', show: tour.notes },
+    { id: 'lokasi', label: 'Lokasi', show: tour.location },
+    { id: 'faq', label: 'FAQ', show: tour.faq },
+  ].filter(t => t.show !== false)
 
   return (
     <>
@@ -99,20 +112,55 @@ export default function TourDetail() {
         </div>
       </section>
 
-      {/* Content - Two Column Layout */}
+      {/* Sticky Tabs */}
+      <div className={styles.stickyTabs}>
+        <div className="container">
+          <div className={styles.tabsList}>
+            {tabs.map(t => (
+              <button
+                key={t.id}
+                className={`${styles.tabBtn} ${tab === t.id ? styles.tabActive : ''}`}
+                onClick={() => setTab(t.id)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content - Two Column */}
       <section className={styles.content}>
         <div className="container">
           <div className={styles.tourGrid}>
-            {/* Left Column - Information */}
+            {/* Left Column - Dynamic Content */}
             <div className={styles.tourMain}>
-              {tour.description && (
+              {tab === 'informasi' && (
                 <div className={styles.section}>
                   <h2>Informasi Paket</h2>
                   <p className={styles.description}>{tour.description}</p>
+
+                  {tour.included && (
+                    <div className={styles.inclusion}>
+                      <h3>Termasuk</h3>
+                      <ul>{tour.included.split('\n').filter(Boolean).map((item, idx) => (
+                        <li key={idx}><span className={styles.checkIcon}>✓</span>{item}</li>
+                      ))}</ul>
+                    </div>
+                  )}
+
+                  {tour.excluded && (
+                    <div className={styles.inclusion}>
+                      <h3>Tidak Termasuk</h3>
+                      <ul>{tour.excluded.split('\n').filter(Boolean).map((item, idx) => (
+                        <li key={idx}><span className={styles.crossIcon}>✗</span>{item}</li>
+                      ))}</ul>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {tour.itinerary && (
+              {tab === 'itinerary' && tour.itinerary && (
                 <div className={styles.section}>
                   <h2>Itinerary</h2>
                   <div className={styles.itinerary}>
@@ -126,21 +174,21 @@ export default function TourDetail() {
                 </div>
               )}
 
-              {tour.notes && (
+              {tab === 'catatan' && tour.notes && (
                 <div className={styles.section}>
                   <h2>Catatan Penting</h2>
                   <p className={styles.notes}>{tour.notes}</p>
                 </div>
               )}
 
-              {tour.location && (
+              {tab === 'lokasi' && tour.location && (
                 <div className={styles.section}>
                   <h2>Lokasi</h2>
                   <p className={styles.locationText}>{tour.location}</p>
                 </div>
               )}
 
-              {tour.faq && (
+              {tab === 'faq' && tour.faq && (
                 <div className={styles.section}>
                   <h2>FAQ</h2>
                   <div className={styles.faqList}>
@@ -177,7 +225,7 @@ export default function TourDetail() {
               )}
             </div>
 
-            {/* Right Column - Booking & Price */}
+            {/* Right Column - Sidebar */}
             <div className={styles.tourSidebar}>
               <div className={styles.bookingCard}>
                 <h3>Harga Paket</h3>
@@ -185,8 +233,28 @@ export default function TourDetail() {
                   <span className={styles.priceLabel}>Per orang</span>
                   <span className={styles.priceValue}>{formatPrice(tour.price)}</span>
                 </div>
+
+                <div className={styles.paxSelector}>
+                  <label htmlFor="paxCount">Jumlah Orang</label>
+                  <select
+                    id="paxCount"
+                    value={paxCount}
+                    onChange={e => setPaxCount(Number(e.target.value))}
+                    className={styles.paxSelect}
+                  >
+                    {[...Array(10)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1} orang</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.totalPrice}>
+                  <span>Total:</span>
+                  <strong>{formatPrice(totalPrice)}</strong>
+                </div>
+
                 <a
-                  href={`${waBase}${encodeURIComponent(`Halo Dearma, saya tertarik dengan paket tour *${tour.name}*.\n\nDurasi: ${tour.duration || '-'}\nHarga: ${formatPrice(tour.price)}/pax\n\nMohon info ketersediaan dan jadwal terdekat.`)}`}
+                  href={`${waBase}${encodeURIComponent(waMessage)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.bookBtn}
@@ -219,6 +287,17 @@ export default function TourDetail() {
           </div>
         </div>
       </section>
+
+      {/* Mobile Sticky Bottom Bar */}
+      <div className={styles.mobileBottomBar}>
+        <div className={styles.mobilePriceInfo}>
+          <span>Total ({paxCount} orang):</span>
+          <strong>{formatPrice(totalPrice)}</strong>
+        </div>
+        <a href={`${waBase}${encodeURIComponent(waMessage)}`} className={styles.mobileBookBtn}>
+          Booking
+        </a>
+      </div>
 
       <section className={styles.ctaSection}>
         <div className="container">
