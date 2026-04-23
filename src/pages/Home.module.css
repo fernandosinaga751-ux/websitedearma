@@ -5,13 +5,13 @@
   overflow: hidden;
 }
 
-/* Hero Slider Container - 16:9 Aspect Ratio */
+/* Hero Slider Container - Wide Landscape 1357:603 */
 .heroSliderContainer {
   position: relative;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1357 / 603;
   overflow: hidden;
   background: #000;
 }
