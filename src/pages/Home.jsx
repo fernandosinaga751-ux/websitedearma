@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
@@ -6,7 +6,6 @@ import { useSettings } from '../context/SettingsContext'
 import { db } from '../firebase/config'
 import { formatPrice, cars as staticCars } from '../data/cars'
 import styles from './Home.module.css'
-import logo from '../assets/logo.svg'
 
 // === HERO SECTION ===
 function Hero() {
@@ -36,37 +35,42 @@ function Hero() {
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Dearma, saya ingin memesan mobil rental')}`
 
   return (
-    <section className={styles.hero}>
-      {/* Photo Slider */}
-      {headerImages.length > 0 ? (
-        <div className={styles.heroSlides}>
-          {headerImages.map((img, idx) => (
-            <div
-              key={idx}
-              className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
-              style={{ backgroundImage: `url(${img})` }}
-            />
-          ))}
-          {headerImages.length > 1 && (
-            <div className={styles.slideDots}>
-              {headerImages.map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`${styles.slideDot} ${idx === currentSlide ? styles.slideDotActive : ''}`}
-                  onClick={() => setCurrentSlide(idx)}
-                  aria-label={`Slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className={styles.heroSlides}>
-          <div className={styles.heroSlide} style={{ backgroundImage: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
-        </div>
-      )}
+    <>
+      {/* Hero Slider - Fullscreen */}
+      <section className={styles.heroSlider}>
+        {headerImages.length > 0 ? (
+          <div className={styles.heroSlides}>
+            {headerImages.map((img, idx) => (
+              <div
+                key={idx}
+                className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
+                style={{ backgroundImage: `url(${img})` }}
+              />
+            ))}
+            {headerImages.length > 1 && (
+              <div className={styles.slideDots}>
+                {headerImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    className={`${styles.slideDot} ${idx === currentSlide ? styles.slideDotActive : ''}`}
+                    onClick={() => setCurrentSlide(idx)}
+                    aria-label={`Slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className={styles.heroSlides}>
+            <div className={styles.heroSlide} style={{ backgroundImage: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
+          </div>
+        )}
+        <div className={styles.heroOverlay} />
+      </section>
 
-      <div className={`${styles.heroContent} ${loaded ? styles.loaded : ''}`}>
+      {/* Hero Text Content - Below Slider */}
+      <section className={styles.heroText}>
+        <div className={`${styles.heroContent} ${loaded ? styles.loaded : ''}`}>
         <div className={styles.badge}>
           <div className={styles.badgeDot} />
           <span>Tersedia 24/7 — Siap Melayani</span>
@@ -98,31 +102,9 @@ function Hero() {
           </Link>
         </div>
       </div>
-
-      {/* Animated logo/car visual */}
-      <div className={`${styles.heroVisual} ${loaded ? styles.visualLoaded : ''}`}>
-        <div className={styles.logoGlow}>
-          <img src={logo} alt="Dearma" className={styles.heroLogo} />
-        </div>
-        <div className={styles.orbit}>
-          {['Alphard', 'Fortuner', 'Hiace', 'Innova'].map((c, i) => (
-            <div
-              key={c}
-              className={styles.orbitItem}
-              style={{ '--i': i, '--total': 4 }}
-            >
-              {c}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.scrollIndicator}>
-        <span>Scroll</span>
-        <div className={styles.scrollLine} />
-      </div>
     </section>
-  )
+  </>
+)
 }
 
 // === FEATURES SECTION ===
