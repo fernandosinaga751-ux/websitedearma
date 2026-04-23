@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
 import { useSettings } from '../context/SettingsContext'
 import { db } from '../firebase/config'
-import { formatPrice, cars as staticCars } from '../data/cars'
+import { formatPrice } from '../data/cars'
 import styles from './Home.module.css'
 
 // === HERO SECTION ===
@@ -199,8 +199,7 @@ function FeaturedCars() {
     fetchCars()
   }, [])
 
-  const carList = dbCars.length > 0 ? dbCars : staticCars
-  const featured = carList.slice(0, 6)
+   const featured = dbCars.slice(0, 6)
   const waNumber = settings.whatsapp || '6281234567890'
   const waBase = `https://wa.me/${waNumber}?text=`
 
@@ -213,40 +212,48 @@ function FeaturedCars() {
           <div className="gold-line" />
           <p className="section-subtitle">Armada terpilih yang paling banyak dipesan pelanggan kami</p>
         </div>
-        <div className={styles.carsGrid}>
-          {featured.map((car, i) => (
-            <div key={car.id} className={styles.carCard} style={{ animationDelay: `${i * 0.15}s` }}>
-              {car.tag && <div className={styles.carTag}>{car.tag}</div>}
-              <div className={styles.carImageWrap}>
-                <img src={car.imageUrl || car.image} alt={car.name} className={styles.carImage} loading="lazy" />
-              </div>
-              <div className={styles.carInfo}>
-                <div className={styles.carCategory}>{car.category}</div>
-                <h3 className={styles.carName}>{car.name}</h3>
-                <div className={styles.carFeatures}>
-                  {car.features.slice(0, 2).map(f => (
-                    <span key={f} className={styles.carFeature}>{f}</span>
-                  ))}
+        {featured.length > 0 ? (
+          <div className={styles.carsGrid}>
+            {featured.map((car, i) => (
+              <div key={car.id} className={styles.carCard} style={{ animationDelay: `${i * 0.15}s` }}>
+                {car.tag && <div className={styles.carTag}>{car.tag}</div>}
+                <div className={styles.carImageWrap}>
+                  {car.imageUrl ? (
+                    <img src={car.imageUrl} alt={car.name} className={styles.carImage} loading="lazy" />
+                  ) : (
+                    <div className={styles.noImage}>Gambar akan tersedia</div>
+                  )}
                 </div>
-                <div className={styles.carPrice}>
-                  <div>
-                    <span className={styles.priceLabel}>Mulai dari</span>
-                    <span className={styles.priceValue}>{formatPrice(car.pricePerDay)}</span>
-                    <span className={styles.priceDay}>/hari</span>
+                <div className={styles.carInfo}>
+                  <div className={styles.carCategory}>{car.category}</div>
+                  <h3 className={styles.carName}>{car.name}</h3>
+                  <div className={styles.carFeatures}>
+                    {car.features.slice(0, 2).map(f => (
+                      <span key={f} className={styles.carFeature}>{f}</span>
+                    ))}
                   </div>
-                  <a
-                    href={`${waBase}${encodeURIComponent(`Halo, saya ingin booking ${car.name}. Berapa ketersediaannya?`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.bookBtn}
-                  >
-                    Booking
-                  </a>
+                  <div className={styles.carPrice}>
+                    <div>
+                      <span className={styles.priceLabel}>Mulai dari</span>
+                      <span className={styles.priceValue}>{formatPrice(car.pricePerDay)}</span>
+                      <span className={styles.priceDay}>/hari</span>
+                    </div>
+                    <a
+                      href={`${waBase}${encodeURIComponent(`Halo, saya ingin booking ${car.name}. Berapa ketersediaannya?`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.bookBtn}
+                    >
+                      Booking
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyCars}>Belum ada armada yang ditambahkan.</div>
+        )}
         <div className={styles.viewAll}>
           <Link to="/armada" className="btn btn-outline">
             Lihat Semua Armada
