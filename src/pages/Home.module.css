@@ -14,17 +14,25 @@
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  background: #000;
 }
 
 .heroSlide {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #1a2a4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   transition: opacity 1s ease-in-out;
+  background: #000;
+}
+
+.heroSlideImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Show full image, no crop */
+  display: block;
 }
 
 .heroSlideActive {

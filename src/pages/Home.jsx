@@ -43,8 +43,9 @@ function Hero() {
             <div
               key={idx}
               className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
-              style={{ backgroundImage: `url(${img})` }}
-            />
+            >
+              <img src={img} alt={`Slide ${idx + 1}`} className={styles.heroSlideImg} />
+            </div>
           ))}
           {headerImages.length > 1 && (
             <div className={styles.slideDots}>
@@ -61,7 +62,7 @@ function Hero() {
         </div>
       ) : (
         <div className={styles.heroSlides}>
-          <div className={styles.heroSlide} style={{ backgroundImage: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
+          <div className={styles.heroSlide} style={{ background: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
         </div>
       )}
 
