@@ -58,39 +58,38 @@ export default function TourDetail() {
 
   const waBase = 'https://wa.me/6281234567890?text='
 
-  // Calculate price based on pax count and car type
-  const getPriceForPax = (pax, carType) => {
-    if (!tour?.paxPricing || !Array.isArray(tour.paxPricing) || tour.paxPricing.length === 0) {
-      return tour?.price ? tour.price * pax : 0
+  // Lookup total price from paxPricing (no calculation)
+  const getTotalPrice = (pax, carType) => {
+    if (!tour?.paxPricing || !Array.isArray(tour.paxPricing)) {
+      return null
     }
 
-    // Filter by car type if specified
-    let pricingList = tour.paxPricing
-    if (carType) {
-      pricingList = pricingList.filter(p => p.carType === carType)
-      if (pricingList.length === 0) pricingList = tour.paxPricing
-    }
+    // Find exact match: pax + carType
+    const exactMatch = tour.paxPricing.find(p => p.pax === pax && p.carType === carType)
+    if (exactMatch) return exactMatch.totalPrice || exactMatch.price // support both
 
-    // Find matching pricing entry for exact pax count
-    const exactMatch = pricingList.find(p => p.pax === pax)
-    if (exactMatch) return exactMatch.price * pax
-
-    // Find closest lower pax
-    const sorted = [...pricingList].sort((a, b) => a.pax - b.pax)
-    const closest = sorted.filter(p => p.pax <= pax).pop() || sorted[0]
-    return closest.price * pax
+    // No match found
+    return null
   }
 
-  const currentPrice = getPriceForPax(paxCount, selectedCar)
+  const currentPrice = getTotalPrice(paxCount, selectedCar)
 
-  // Get available car types for current pax
-  const getAvailableCarTypes = () => {
+  // Get available car types for current pax count
+  const getAvailableCarTypes = (pax) => {
     if (!tour?.paxPricing) return []
-    const types = [...new Set(tour.paxPricing.map(p => p.carType))]
-    return types
+    return [...new Set(tour.paxPricing.filter(p => p.pax === pax).map(p => p.carType))]
   }
 
-  const availableCars = getAvailableCarTypes()
+  const availableCars = getAvailableCarTypes(paxCount)
+
+  // Update selected car when pax changes
+  useEffect(() => {
+    if (availableCars.length > 0 && !availableCars.includes(selectedCar)) {
+      setSelectedCar(availableCars[0])
+    } else if (availableCars.length === 0) {
+      setSelectedCar('')
+    }
+  }, [paxCount, availableCars])
 
   const waMessage = `Halo Dearma, saya tertarik dengan paket tour *${tour?.name || ''}*.\n\nDurasi: ${tour?.duration || '-'}\nJumlah Orang: ${paxCount}\nJenis Mobil: ${selectedCar || 'Avanza'}\nHarga total: ${formatPrice(currentPrice)}\n\nMohon info ketersediaan dan jadwal terdekat.`
 

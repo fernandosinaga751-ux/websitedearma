@@ -417,7 +417,7 @@ function ToursTab({ tours, refresh }) {
     notes: '', 
     location: '', 
     faq: '',
-    paxPricing: [] // { pax: number, price: number, carType: string }[]
+    paxPricing: [] // { pax: number, totalPrice: number, carType: string }[]
   })
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
@@ -468,7 +468,7 @@ function ToursTab({ tours, refresh }) {
      }))
    }
 
-  const save = async (e) => {
+    const save = async (e) => {
     e.preventDefault()
     if (!form.name) { toast.error('Nama paket wajib diisi!'); return }
     try {
@@ -480,7 +480,7 @@ function ToursTab({ tours, refresh }) {
         paxPricing: form.paxPricing.map(p => ({
           ...p,
           pax: Number(p.pax),
-          price: Number(p.price)
+          totalPrice: Number(p.price) // price di form adalah total price
         })),
         updatedAt: serverTimestamp() 
       }
@@ -521,11 +521,11 @@ function ToursTab({ tours, refresh }) {
        notes: t.notes || '',
        location: t.location || '',
        faq: t.faq || '',
-       paxPricing: t.paxPricing ? t.paxPricing.map(p => ({
-         pax: p.pax,
-         price: p.price,
-         carType: p.carType
-       })) : []
+        paxPricing: t.paxPricing ? t.paxPricing.map(p => ({
+          pax: p.pax,
+          price: p.totalPrice || p.price, // support both field names
+          carType: p.carType
+        })) : []
      })
      setEditing(t.id); setShowForm(true)
    }
