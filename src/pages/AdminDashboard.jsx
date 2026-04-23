@@ -403,7 +403,7 @@ function ContactsTab({ contacts, refresh }) {
 
 // --- Tours Tab ---
 function ToursTab({ tours, refresh }) {
-  const [form, setForm] = useState({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1' })
+  const [form, setForm] = useState({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1', notes: '', location: '', faq: '' })
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -445,7 +445,7 @@ function ToursTab({ tours, refresh }) {
         await addDoc(collection(db, 'tours'), { ...data, createdAt: serverTimestamp() })
         toast.success('Paket tour ditambahkan!')
       }
-      setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1' })
+       setForm({ name: '', description: '', price: '', duration: '', included: '', excluded: '', imageUrl: '', tag: '', itinerary: '', minParticipants: '1', notes: '', location: '', faq: '' })
       setEditing(null); setShowForm(false)
       refresh()
     } catch (err) { 
@@ -462,7 +462,7 @@ function ToursTab({ tours, refresh }) {
 
   const edit = t => {
     setForm({ 
-      name: t.name, 
+      name: t.name || '', 
       description: t.description || '', 
       price: t.price?.toString() || '', 
       duration: t.duration || '', 
@@ -471,7 +471,10 @@ function ToursTab({ tours, refresh }) {
       imageUrl: t.imageUrl || '', 
       tag: t.tag || '',
       itinerary: t.itinerary || '',
-      minParticipants: t.minParticipants?.toString() || '1'
+      minParticipants: t.minParticipants?.toString() || '1',
+      notes: t.notes || '',
+      location: t.location || '',
+      faq: t.faq || ''
     })
     setEditing(t.id); setShowForm(true)
   }
@@ -502,6 +505,12 @@ function ToursTab({ tours, refresh }) {
             </div>
             <div className={styles.field}><label>Termasuk (satu per baris)</label><textarea name="included" value={form.included} onChange={handle} className={styles.inp} rows={3} placeholder="Tiket masuk&#10;Hotel&#10;Sopir & mobil" /></div>
             <div className={styles.field}><label>Tidak Termasuk (satu per baris)</label><textarea name="excluded" value={form.excluded} onChange={handle} className={styles.inp} rows={2} placeholder="Makanan&#10;Tiket masuk objek wisata tambahan" /></div>
+
+            <h4 style={{ margin: '20px 0 12px', color: '#c9a227' }}>Informasi Tambahan</h4>
+            <div className={styles.field}><label>Catatan</label><textarea name="notes" value={form.notes} onChange={handle} className={styles.inp} rows={3} placeholder="Informasi tambahan untuk pelanggan..." /></div>
+            <div className={styles.field}><label>Lokasi</label><textarea name="location" value={form.location} onChange={handle} className={styles.inp} rows={2} placeholder="Alamat lokasi tour..." /></div>
+            <div className={styles.field}><label>FAQ (satu pertanyaan per baris)</label><textarea name="faq" value={form.faq} onChange={handle} className={styles.inp} rows={4} placeholder="Apakah include makan?&#10;Bagaimana jadwalnya?" /></div>
+
             <div className={styles.formActions}>
               <button type="submit" className={styles.saveBtn} disabled={uploading}>{editing ? 'Update' : 'Simpan'}</button>
               <button type="button" onClick={() => setShowForm(false)} className={styles.cancelBtn}>Batal</button>

@@ -97,16 +97,22 @@
   background: #0a0a0a;
 }
 
-.grid {
+.tourGrid {
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 40px;
 }
 
-.main {
+.tourMain {
   display: flex;
   flex-direction: column;
   gap: 40px;
+}
+
+.tourSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .section h2 {
@@ -153,6 +159,37 @@
 .itineraryItem p {
   color: #9ca3af;
   line-height: 1.6;
+}
+
+.notes, .locationText {
+  color: #9ca3af;
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faqItem {
+  background: #141414;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 3px solid #c9a227;
+}
+
+.faqItem strong {
+  color: #fff;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.faqItem p {
+  color: #9ca3af;
+  font-weight: normal;
+  font-size: 0.95rem;
 }
 
 .priceBox {
@@ -276,6 +313,110 @@
   margin-top: 16px;
 }
 
+.shareSection {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #222;
+}
+
+.shareSection h4 {
+  color: #fff;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.shareButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shareBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #9ca3af;
+  transition: all 0.3s;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.shareBtn:hover {
+  background: #c9a227;
+  color: #000;
+}
+
+.otherToursGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.otherTourCard {
+  background: #141414;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s;
+  border: 1px solid #222;
+}
+
+.otherTourCard:hover {
+  transform: translateY(-4px);
+  border-color: #c9a227;
+}
+
+.otherTourImage {
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.otherTourImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.otherTourCard:hover .otherTourImage img {
+  transform: scale(1.05);
+}
+
+.otherTourInfo {
+  padding: 16px;
+}
+
+.otherTourInfo h3 {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.otherTourDuration {
+  display: block;
+  color: #c9a227;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.otherTourPrice {
+  display: block;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .infoItem {
   display: flex;
   justify-content: space-between;
@@ -324,11 +465,11 @@
 }
 
 @media (max-width: 1024px) {
-  .grid {
+  .tourGrid {
     grid-template-columns: 1fr;
   }
-  
-  .sidebar {
+
+  .tourSidebar {
     order: -1;
   }
 }
