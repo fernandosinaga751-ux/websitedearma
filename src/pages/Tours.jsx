@@ -47,7 +47,8 @@ export default function Tours() {
     }
   }, [headerImages.length])
 
-  const waBase = 'https://wa.me/6281234567890?text='
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waBase = `https://wa.me/${waNumber}?text=`
 
   return (
     <>

@@ -61,7 +61,9 @@ export default function TourDetail() {
     fetchData()
   }, [id, navigate])
 
-  const waBase = 'https://wa.me/6281234567890?text='
+  const { settings } = useSettings()
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waBase = `https://wa.me/${waNumber}?text=`
 
   // Get unique pax options from paxPricing
   const getPaxOptions = () => {

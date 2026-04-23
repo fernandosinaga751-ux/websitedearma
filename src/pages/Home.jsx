@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
@@ -7,67 +7,100 @@ import { db } from '../firebase/config'
 import { formatPrice } from '../data/cars'
 import styles from './Home.module.css'
 
+// Car image imports for gallery fallback
+import imgAlphard  from '../assets/cars/alphard-hev.jpg'
+import imgAlphard2 from '../assets/cars/alphard-old.jpg'
+import imgFortune  from '../assets/cars/fortuner.jpg'
+import imgInnova   from '../assets/cars/innova-zenix.jpg'
+import imgHiaceP   from '../assets/cars/hiace-premio.jpg'
+import imgPajero   from '../assets/cars/pajero.jpg'
+import imgHiace    from '../assets/cars/hiace.jpg'
+import imgAvanza   from '../assets/cars/avanza.png'
+
+const DEFAULT_GALLERY = [
+  { src: imgAlphard,  label: 'Alphard HEV — Luxury MPV' },
+  { src: imgFortune,  label: 'Fortuner — Premium SUV' },
+  { src: imgInnova,   label: 'Innova Zenix — Elegant MPV' },
+  { src: imgHiaceP,   label: 'Hiace Premio — Executive Van' },
+  { src: imgPajero,   label: 'Pajero Sport — Powerful SUV' },
+  { src: imgHiace,    label: 'Hiace — Group Transport' },
+  { src: imgAlphard2, label: 'Alphard — Premium MPV' },
+  { src: imgAvanza,   label: 'Avanza — City Car' },
+]
+
+// === GALLERY SLIDE (below navbar) ===
+function GallerySlide() {
+  const [current, setCurrent] = useState(0)
+  const { settings } = useSettings()
+
+  const settingsSlides = [
+    settings.homeHeader1, settings.homeHeader2, settings.homeHeader3,
+    settings.homeHeader4, settings.homeHeader5,
+  ].filter(Boolean).map(src => ({ src, label: '' }))
+
+  const slides = settingsSlides.length > 0 ? settingsSlides : DEFAULT_GALLERY
+
+  const next = useCallback(() => setCurrent(p => (p + 1) % slides.length), [slides.length])
+  const prev = () => setCurrent(p => (p - 1 + slides.length) % slides.length)
+
+  useEffect(() => {
+    const timer = setInterval(next, 5000)
+    return () => clearInterval(timer)
+  }, [next])
+
+  return (
+    <section className={styles.gallerySlider}>
+      {slides.map((slide, idx) => (
+        <div
+          key={idx}
+          className={`${styles.gallerySlide} ${idx === current ? styles.gallerySlideActive : ''}`}
+        >
+          <img src={slide.src} alt={slide.label || `Gallery ${idx + 1}`} className={styles.galleryImg} />
+          {slide.label && (
+            <div className={styles.galleryCaption}>
+              <span className={styles.galleryCaptionText}>{slide.label}</span>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <button className={`${styles.galleryArrow} ${styles.galleryArrowLeft}`} onClick={prev} aria-label="Sebelumnya">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <button className={`${styles.galleryArrow} ${styles.galleryArrowRight}`} onClick={next} aria-label="Selanjutnya">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+
+      <div className={styles.galleryDots}>
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            className={`${styles.galleryDot} ${idx === current ? styles.galleryDotActive : ''}`}
+            onClick={() => setCurrent(idx)}
+            aria-label={`Slide ${idx + 1}`}
+          />
+        ))}
+      </div>
+
+      <div className={styles.galleryCounter}>{current + 1} / {slides.length}</div>
+    </section>
+  )
+}
+
 // === HERO SECTION ===
 function Hero() {
   const [loaded, setLoaded] = useState(false)
-  const [currentSlide, setCurrentSlide] = useState(0)
   const { settings } = useSettings()
   useEffect(() => { setTimeout(() => setLoaded(true), 100) }, [])
-
-  const headerImages = [
-    settings.homeHeader1,
-    settings.homeHeader2,
-    settings.homeHeader3,
-    settings.homeHeader4,
-    settings.homeHeader5
-  ].filter(Boolean)
-
-  useEffect(() => {
-    if (headerImages.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentSlide(p => (p + 1) % headerImages.length)
-      }, 5000)
-      return () => clearInterval(interval)
-    }
-  }, [headerImages.length])
-
   const waNumber = settings.whatsapp || '6281234567890'
-  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Dearma, saya ingin memesan mobil rental')}`
 
   return (
     <>
-      {/* Hero Slider */}
-      <section className={styles.heroSlider}>
-        {headerImages.length > 0 ? (
-          <div className={styles.heroSlides}>
-            {headerImages.map((img, idx) => (
-              <div
-                key={idx}
-                className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
-              >
-                <img src={img} alt={`Slide ${idx + 1}`} className={styles.heroSlideImg} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={styles.heroSlides}>
-            <div className={styles.heroSlide} style={{ background: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
-          </div>
-        )}
-        {headerImages.length > 1 && (
-          <div className={styles.slideDots}>
-            {headerImages.map((_, idx) => (
-              <button
-                key={idx}
-                className={`${styles.slideDot} ${idx === currentSlide ? styles.slideDotActive : ''}`}
-                onClick={() => setCurrentSlide(idx)}
-                aria-label={`Slide ${idx + 1}`}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
       {/* Hero Text Content */}
       <section className={styles.heroText}>
         <div className="container">
@@ -537,7 +570,7 @@ function CTA() {
               </svg>
               Chat WhatsApp
             </a>
-            <a href="tel:+6281234567890" className="btn btn-outline">
+            <a href={`tel:+${waNumber}`} className="btn btn-outline">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.96-1.84a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
@@ -602,6 +635,7 @@ export default function Home() {
         <title>Dearma Sewa Mobil Medan | Rental Mobil Premium & Terpercaya</title>
         <meta name="description" content="Dearma Sewa Mobil Medan - Rental mobil premium dengan armada lengkap: Alphard, Fortuner, Innova Zenix, Hiace Premio, Pajero Sport, Avanza. Harga terbaik, sopir profesional, layanan 24 jam." />
       </Helmet>
+      <GallerySlide />
       <Hero />
       <Features />
       <FeaturedCars />

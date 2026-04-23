@@ -45,7 +45,8 @@ export default function Fleet() {
 
    const carList = dbCars
    const filtered = filter === 'Semua' ? carList : carList.filter(c => c.category === filter)
-  const waBase = 'https://wa.me/6281234567890?text='
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waBase = `https://wa.me/${waNumber}?text=`
   const cars = carList
 
   return (
