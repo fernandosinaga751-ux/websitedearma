@@ -129,6 +129,12 @@
   gap: 12px;
 }
 
+/* Pax number options */
+.paxPricingFields select option {
+  background: #0a0a0a;
+  color: #f0f4ff;
+}
+
 .addPaxBtn {
   margin-top: 8px;
   padding: 10px 16px;

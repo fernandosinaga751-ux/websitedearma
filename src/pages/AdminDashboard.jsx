@@ -445,7 +445,7 @@ function ToursTab({ tours, refresh }) {
    const addPaxPricing = () => {
      setForm(p => ({
        ...p,
-       paxPricing: [...(p.paxPricing || []), { pax: 1, price: '', carType: 'Avanza' }]
+       paxPricing: [...(p.paxPricing || []), { pax: 2, totalPrice: '', carType: 'Avanza' }]
      }))
    }
 
@@ -570,17 +570,20 @@ function ToursTab({ tours, refresh }) {
                     <span>Harga untuk {item.pax} org</span>
                     <button type="button" onClick={() => removePaxPricing(idx)} className={styles.removePaxBtn}>×</button>
                   </div>
-                  <div className={styles.paxPricingFields}>
-                    <div className={styles.field}>
-                      <label>Jumlah Org</label>
-                      <input 
-                        type="number" 
-                        value={item.pax} 
-                        onChange={(e) => updatePaxPricing(idx, 'pax', e.target.value)}
-                        className={styles.inp}
-                        min="1"
-                      />
-                    </div>
+                   <div className={styles.paxPricingFields}>
+                     <div className={styles.field}>
+                       <label>Jumlah Org</label>
+                       <select 
+                         value={item.pax} 
+                         onChange={(e) => updatePaxPricing(idx, 'pax', e.target.value)}
+                         className={styles.inp}
+                       >
+                         <option value={2}>2 Orang</option>
+                         <option value={4}>4 Orang</option>
+                         <option value={8}>8 Orang</option>
+                         <option value={10}>10 Orang</option>
+                       </select>
+                     </div>
                     <div className={styles.field}>
                       <label>Harga (Rp)</label>
                       <input 

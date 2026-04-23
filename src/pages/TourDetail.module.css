@@ -316,6 +316,38 @@
   margin-bottom: 8px;
 }
 
+/* Pax Buttons (List) */
+.paxButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.paxBtn {
+  padding: 8px 16px;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Outfit', sans-serif;
+}
+
+.paxBtn:hover {
+  border-color: #c9a227;
+  color: #c9a227;
+}
+
+.paxBtnActive {
+  background: #c9a227;
+  border-color: #c9a227;
+  color: #000;
+  font-weight: 600;
+}
+
+/* Pax Select Dropdown (fallback) */
 .paxSelect {
   width: 100%;
   padding: 10px 12px;
