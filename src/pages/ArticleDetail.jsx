@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../firebase/config'
+import { useSettings } from '../context/SettingsContext'
 import styles from './ArticleDetail.module.css'
 
 const STATIC = {
@@ -37,6 +38,8 @@ const STATIC = {
 }
 
 export default function ArticleDetail() {
+  const { settings } = useSettings()
+  const waNumber = settings.whatsapp || '6281234567890'
   const { id } = useParams()
   const [article, setArticle] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -111,7 +114,7 @@ export default function ArticleDetail() {
             <h3>Butuh Mobil untuk Perjalanan Anda?</h3>
             <p>Hubungi Dearma Sewa Mobil Medan sekarang dan dapatkan penawaran terbaik!</p>
             <a
-              href="https://wa.me/6281234567890?text=Halo+Dearma%2C+saya+ingin+memesan+mobil+rental"
+              href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Halo Dearma, saya ingin memesan mobil rental")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-gold"

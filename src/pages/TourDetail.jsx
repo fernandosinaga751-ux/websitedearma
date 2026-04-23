@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
 import { db } from '../firebase/config'
+import { useSettings } from '../context/SettingsContext'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import WhatsAppButton from '../components/WhatsAppButton'
@@ -61,7 +62,9 @@ export default function TourDetail() {
     fetchData()
   }, [id, navigate])
 
-  const waBase = 'https://wa.me/6281234567890?text='
+  const { settings } = useSettings()
+  const waNumber = settings.whatsapp || '6281234567890'
+  const waBase = `https://wa.me/${waNumber}?text=`
 
   // Get unique pax options from paxPricing
   const getPaxOptions = () => {

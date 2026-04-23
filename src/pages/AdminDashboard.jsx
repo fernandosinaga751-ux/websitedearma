@@ -907,7 +907,9 @@ function SettingsTab({ settings, refresh }) {
     homeHeader2: settings?.homeHeader2 || '',
     homeHeader3: settings?.homeHeader3 || '',
     homeHeader4: settings?.homeHeader4 || '',
-    homeHeader5: settings?.homeHeader5 || ''
+    homeHeader5: settings?.homeHeader5 || '',
+    testimonialBgPhoto: settings?.testimonialBgPhoto || '',
+    testimonialCardBg:  settings?.testimonialCardBg  || ''
   })
   const [uploading, setUploading] = useState(false)
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
@@ -997,6 +999,54 @@ function SettingsTab({ settings, refresh }) {
             {form.tourHeader2 && <img src={form.tourHeader2} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
           <div className={styles.field}><label>Foto 3</label><input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'tourHeader3')} className={styles.inp} disabled={uploading} />
             {form.tourHeader3 && <img src={form.tourHeader3} alt="" style={{ width: 100, height: 60, objectFit: 'cover', marginTop: 4, borderRadius: 4 }} />}</div>
+        </div>
+
+        <h4 style={{ margin: '24px 0 12px', color: '#c9a227' }}>Testimoni — Background &amp; Warna Card</h4>
+        <div className={styles.formGrid}>
+          <div className={styles.field}>
+            <label>Foto Background Seksi Testimoni</label>
+            <input type="file" accept="image/*" onChange={(e) => uploadImage(e, 'testimonialBgPhoto')} className={styles.inp} disabled={uploading} />
+            {form.testimonialBgPhoto && (
+              <div style={{ marginTop: 8, position: 'relative', display: 'inline-block' }}>
+                <img src={form.testimonialBgPhoto} alt="bg preview" style={{ width: '100%', maxWidth: 260, height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(201,162,39,0.3)' }} />
+                <button
+                  type="button"
+                  onClick={() => setForm(p => ({ ...p, testimonialBgPhoto: '' }))}
+                  style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer', fontSize: 12 }}
+                >✕ Hapus</button>
+              </div>
+            )}
+            <small style={{ color: '#8892a4', fontSize: 12, display: 'block', marginTop: 4 }}>Foto ini jadi background seluruh seksi testimoni</small>
+          </div>
+          <div className={styles.field}>
+            <label>Warna Background Card Testimoni</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
+              <input
+                type="color"
+                value={form.testimonialCardBg || '#0d1528'}
+                onChange={e => setForm(p => ({ ...p, testimonialCardBg: e.target.value }))}
+                style={{ width: 48, height: 40, borderRadius: 8, border: '1px solid rgba(201,162,39,0.3)', cursor: 'pointer', background: 'transparent', padding: 2 }}
+              />
+              <input
+                type="text"
+                name="testimonialCardBg"
+                value={form.testimonialCardBg}
+                onChange={handle}
+                className={styles.inp}
+                placeholder="#0d1528 atau rgba(13,21,40,0.9)"
+                style={{ flex: 1 }}
+              />
+              {form.testimonialCardBg && (
+                <button type="button" onClick={() => setForm(p => ({ ...p, testimonialCardBg: '' }))}
+                  style={{ background: 'rgba(255,255,255,0.08)', color: '#8892a4', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', fontSize: 12 }}>Reset</button>
+              )}
+            </div>
+            <div style={{ marginTop: 8, padding: 16, borderRadius: 10, border: '1px solid rgba(255,255,255,0.07)', background: form.testimonialCardBg || 'rgba(255,255,255,0.04)' }}>
+              <div style={{ fontSize: 12, color: '#8892a4' }}>Preview Card</div>
+              <div style={{ fontSize: 14, color: '#f0f4ff', marginTop: 4 }}>"Testimoni pelanggan akan tampil seperti ini..."</div>
+            </div>
+            <small style={{ color: '#8892a4', fontSize: 12, display: 'block', marginTop: 4 }}>Kosongkan untuk gunakan warna default (gelap)</small>
+          </div>
         </div>
 
         <div className={styles.formActions}>

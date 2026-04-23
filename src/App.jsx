@@ -31,7 +31,7 @@ export default function App() {
     <>
       <ScrollToTop />
       {!isAdmin && <Navbar />}
-      <main>
+      <main style={{ paddingTop: isAdmin ? 0 : '72px' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/armada" element={<Fleet />} />

@@ -51,7 +51,7 @@ export default function Navbar() {
             </NavLink>
           ))}
           <a
-            href="https://wa.me/6281234567890?text=Halo+Dearma%2C+saya+ingin+tanya+tentang+rental+mobil"
+            href={`https://wa.me/${settings.whatsapp || "6281234567890"}?text=${encodeURIComponent("Halo Dearma, saya ingin tanya tentang rental mobil")}`}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.ctaBtn}
