@@ -35,42 +35,41 @@ function Hero() {
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Dearma, saya ingin memesan mobil rental')}`
 
   return (
-    <>
-      {/* Hero Slider - Fullscreen */}
-      <section className={styles.heroSlider}>
-        {headerImages.length > 0 ? (
-          <div className={styles.heroSlides}>
-            {headerImages.map((img, idx) => (
-              <div
-                key={idx}
-                className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
-                style={{ backgroundImage: `url(${img})` }}
-              />
-            ))}
-            {headerImages.length > 1 && (
-              <div className={styles.slideDots}>
-                {headerImages.map((_, idx) => (
-                  <button
-                    key={idx}
-                    className={`${styles.slideDot} ${idx === currentSlide ? styles.slideDotActive : ''}`}
-                    onClick={() => setCurrentSlide(idx)}
-                    aria-label={`Slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.heroSlides}>
-            <div className={styles.heroSlide} style={{ backgroundImage: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
-          </div>
-        )}
-        <div className={styles.heroOverlay} />
-      </section>
+    <section className={styles.hero}>
+      {/* Photo Slider Background */}
+      {headerImages.length > 0 ? (
+        <div className={styles.heroSlides}>
+          {headerImages.map((img, idx) => (
+            <div
+              key={idx}
+              className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
+              style={{ backgroundImage: `url(${img})` }}
+            />
+          ))}
+          {headerImages.length > 1 && (
+            <div className={styles.slideDots}>
+              {headerImages.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`${styles.slideDot} ${idx === currentSlide ? styles.slideDotActive : ''}`}
+                  onClick={() => setCurrentSlide(idx)}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={styles.heroSlides}>
+          <div className={styles.heroSlide} style={{ backgroundImage: 'linear-gradient(135deg, #1a2a4a 0%, #0a0f1a 100%)' }} />
+        </div>
+      )}
 
-      {/* Hero Text Content - Below Slider */}
-      <section className={styles.heroText}>
-        <div className={`${styles.heroContent} ${loaded ? styles.loaded : ''}`}>
+      {/* Dark Overlay */}
+      <div className={styles.heroOverlay} />
+
+      {/* Content - Centered Overlay */}
+      <div className={`${styles.heroContent} ${loaded ? styles.loaded : ''}`}>
         <div className={styles.badge}>
           <div className={styles.badgeDot} />
           <span>Tersedia 24/7 — Siap Melayani</span>
@@ -103,8 +102,7 @@ function Hero() {
         </div>
       </div>
     </section>
-  </>
-)
+  )
 }
 
 // === FEATURES SECTION ===
