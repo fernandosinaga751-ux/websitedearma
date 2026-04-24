@@ -357,15 +357,14 @@ function Testimonials() {
   // Settings
   const bgPhoto   = settings.testimonialBgPhoto || ''
   const cardBg    = settings.testimonialCardBg  || ''
-  const sectionStyle = bgPhoto
-    ? { backgroundImage: `url(${bgPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }
-    : {}
+  const innerStyle = bgPhoto
+    ? { backgroundImage: `linear-gradient(rgba(7,11,20,0.72), rgba(13,21,40,0.72)), url(${bgPhoto})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
+    : { background: 'linear-gradient(180deg, #070b14 0%, #0d1528 100%)' }
 
   return (
-    <section className={styles.testimonials} style={sectionStyle}>
+    <section className={styles.testimonials}>
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-        <div className={styles.testimonialsInner}>
-          {bgPhoto && <div className={styles.testimonialsOverlay} />}
+        <div className={styles.testimonialsInner} style={innerStyle}>
           <div className={styles.sectionHeader}>
             <p className={styles.sectionTag}>Apa Kata Mereka</p>
             <h2 className="section-title">TESTIMONI<br />PELANGGAN</h2>
