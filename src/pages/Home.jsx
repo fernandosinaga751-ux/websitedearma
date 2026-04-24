@@ -327,6 +327,7 @@ function FeaturedCars() {
 // === TESTIMONIALS ===
 function Testimonials() {
   const { settings } = useSettings()
+  const [current, setCurrent] = useState(0)
   const [testimonials, setTestimonials] = useState([
     { id: 1, name: 'Ahmad Rizki',    role: 'Pengusaha',          text: 'Sudah 3 tahun langganan Dearma. Pelayanannya konsisten bagus, mobilnya selalu bersih dan tepat waktu. Sopirnya juga ramah dan profesional.', rating: 5, avatar: 'A' },
     { id: 2, name: 'Sari Dewi',      role: 'Ibu Rumah Tangga',   text: 'Pesan Alphard untuk pernikahan anak, hasilnya luar biasa! Mobilnya mewah dan bersih, sopirnya berpakaian rapi. Terima kasih Dearma!', rating: 5, avatar: 'S' },
@@ -345,6 +346,14 @@ function Testimonials() {
     fetch()
   }, [])
 
+  const next = useCallback(() => setCurrent(p => (p + 1) % testimonials.length), [testimonials.length])
+  const prev = () => setCurrent(p => (p - 1 + testimonials.length) % testimonials.length)
+
+  useEffect(() => {
+    const t = setInterval(next, 5000)
+    return () => clearInterval(t)
+  }, [next])
+
   // Settings
   const bgPhoto   = settings.testimonialBgPhoto || ''
   const cardBg    = settings.testimonialCardBg  || ''
@@ -362,35 +371,62 @@ function Testimonials() {
           <div className="gold-line" />
         </div>
 
-        <div className={styles.testimonialsGrid}>
-          {testimonials.map((t) => (
-            <div
-              key={t.id}
-              className={styles.testimonialCard}
-              style={cardBg ? { background: cardBg } : {}}
-            >
-              <div className={styles.quoteIcon}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-                </svg>
-              </div>
-              <div className={styles.stars}>
-                {[...Array(t.rating || 5)].map((_, j) => (
-                  <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill="#c9a227">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                ))}
-              </div>
-              <p className={styles.testimonialText}>"{t.text}"</p>
-              <div className={styles.testimonialAuthor}>
-                <div className={styles.authorAvatar}>{t.avatar || t.name?.[0]}</div>
-                <div>
-                  <div className={styles.authorName}>{t.name}</div>
-                  <div className={styles.authorRole}>{t.role}</div>
+        {/* Slider wrapper */}
+        <div className={styles.testimonialsSlider}>
+          <div
+            className={styles.testimonialsTrack}
+            style={{ transform: `translateX(-${current * 100}%)` }}
+          >
+            {testimonials.map((t) => (
+              <div key={t.id} className={styles.testimonialSlide}>
+                <div
+                  className={styles.testimonialCard}
+                  style={cardBg ? { background: cardBg } : {}}
+                >
+                  <div className={styles.quoteIcon}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                    </svg>
+                  </div>
+                  <div className={styles.stars}>
+                    {[...Array(t.rating || 5)].map((_, j) => (
+                      <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill="#c9a227">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <p className={styles.testimonialText}>"{t.text}"</p>
+                  <div className={styles.testimonialAuthor}>
+                    <div className={styles.authorAvatar}>{t.avatar || t.name?.[0]}</div>
+                    <div>
+                      <div className={styles.authorName}>{t.name}</div>
+                      <div className={styles.authorRole}>{t.role}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className={styles.testimonialsControls}>
+          <button className={styles.testiArrow} onClick={prev} aria-label="Sebelumnya">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div className={styles.testiDots}>
+            {testimonials.map((_, idx) => (
+              <button
+                key={idx}
+                className={`${styles.testiDot} ${idx === current ? styles.testiDotActive : ''}`}
+                onClick={() => setCurrent(idx)}
+                aria-label={`Slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+          <button className={styles.testiArrow} onClick={next} aria-label="Selanjutnya">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
       </div>
     </section>
