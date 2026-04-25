@@ -296,9 +296,7 @@ function FeaturedCars() {
                       <span className={styles.priceDay}>/hari</span>
                     </div>
                     <a
-                      href={`${waBase}${encodeURIComponent(`Halo, saya ingin booking ${car.name}. Berapa ketersediaannya?`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`/booking?car=${car.id}`}
                       className={styles.bookBtn}
                     >
                       Booking
