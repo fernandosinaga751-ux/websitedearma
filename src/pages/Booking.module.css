@@ -1,0 +1,555 @@
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0a0a0a 40%, #0d1a2a);
+  padding: 80px 24px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroGlow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.heroTag {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #c9a227;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.heroTitle {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 700;
+  color: #f5f0e8;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+
+.goldLine {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #c9a227, #f0d060);
+  margin: 0 auto 18px;
+  border-radius: 2px;
+}
+
+.heroSub {
+  color: #8892a4;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── Form Section ──────────────────────────────────────────────────────── */
+.formSection {
+  background: #0d0d0d;
+  padding: 60px 16px 80px;
+}
+
+.formWrap {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 20px;
+  padding: 36px;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, #c9a227, #8a6a00);
+  border-radius: 20px 20px 0 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* ── Section Labels ── */
+.secLabel {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c9a227;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.secLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #2a2a2a;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #2a2a2a;
+  margin: 24px 0;
+}
+
+/* ── Fields ── */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.fieldLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.field input,
+.field select,
+.field textarea {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  color: #f5f0e8;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #c9a227;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.1);
+}
+
+.field select option {
+  background: #1a1a1a;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+/* ── Toggle Buttons ── */
+.togRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.togBtn {
+  flex: 1;
+  min-width: 120px;
+  background: #111;
+  border: 2px solid #2a2a2a;
+  border-radius: 10px;
+  color: #666;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 12px 8px;
+  transition: all 0.2s;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.togBtn:hover {
+  border-color: #c9a227;
+  color: #c9a227;
+}
+
+.togOn {
+  border-color: #c9a227 !important;
+  color: #c9a227 !important;
+  background: rgba(201, 162, 39, 0.07) !important;
+}
+
+/* ── Info Box ── */
+.infoBox {
+  background: rgba(201, 162, 39, 0.07);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #c9a227;
+}
+
+/* ── Car Grid ── */
+.loadingCars {
+  text-align: center;
+  color: #555;
+  padding: 30px;
+  font-size: 14px;
+}
+
+.carGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.carCard {
+  background: #f8f8f8;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.22s;
+  position: relative;
+}
+
+.carCard:hover {
+  border-color: #c9a227;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(201, 162, 39, 0.15);
+}
+
+.carSel {
+  border-color: #c9a227 !important;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15), 0 4px 16px rgba(201, 162, 39, 0.12) !important;
+}
+
+.carSel::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: #c9a227;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.carImg {
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+.carName {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.carPrice {
+  font-size: 12px;
+  font-weight: 700;
+  color: #c9a227;
+}
+
+.carPrice span {
+  font-weight: 400;
+  font-size: 10px;
+  color: #888;
+}
+
+/* ── All-in Box ── */
+.allinBox {
+  background: rgba(201, 162, 39, 0.07);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.allinTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c9a227;
+  margin-bottom: 8px;
+}
+
+.allinItem {
+  font-size: 13px;
+  color: #f5f0e8;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Estimasi Box ── */
+.estBox {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-left: 3px solid #c9a227;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+
+.estLabel {
+  font-size: 10px;
+  color: #666;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.estTotal {
+  font-size: 20px;
+  font-weight: 700;
+  color: #c9a227;
+}
+
+.estDet {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+}
+
+/* ── Submit ── */
+.submitBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #c9a227, #8a6a00);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 16px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201, 162, 39, 0.3);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spin {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Help Box ── */
+.helpBox {
+  text-align: center;
+  margin-top: 24px;
+  color: #555;
+  font-size: 13px;
+}
+
+.helpBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.helpBtn:hover {
+  background: #1eb859;
+  transform: translateY(-2px);
+}
+
+/* ── Success Overlay ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.okBox {
+  background: #1a1a1a;
+  border: 1px solid #c9a227;
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+}
+
+.okIcon {
+  font-size: 52px;
+  margin-bottom: 14px;
+}
+
+.okTitle {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #c9a227;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.okDesc {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.idBox {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.idLabel {
+  font-size: 10px;
+  color: #555;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.idVal {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #c9a227;
+}
+
+.okBtn {
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 20px;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  border: none;
+}
+
+.okBtnPrimary {
+  background: linear-gradient(135deg, #c9a227, #8a6a00);
+  color: #fff;
+}
+
+.okBtnPrimary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.okBtnOutline {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #666;
+}
+
+.okBtnOutline:hover { border-color: #c9a227; color: #c9a227; }
+
+.okBtnGhost {
+  background: transparent;
+  color: #444;
+  font-size: 12px;
+}
+
+.okBtnGhost:hover { color: #888; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .card {
+    padding: 20px 16px;
+  }
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .carGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .heroTitle {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .carGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
