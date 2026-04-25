@@ -13,6 +13,7 @@ import Contact from './pages/Contact'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
+import Booking from './pages/Booking'
 import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/artikel" element={<Articles />} />
           <Route path="/artikel/:id" element={<ArticleDetail />} />
           <Route path="/kontak" element={<Contact />} />
+          <Route path="/booking" element={<Booking />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin"
