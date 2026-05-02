@@ -178,19 +178,96 @@ function DashboardTab({ articles, testimonials, tours, cars, contacts }) {
 
 // --- Articles Tab ---
 function ArticlesTab({ articles, refresh }) {
-  const [form, setForm] = useState({ title: '', excerpt: '', content: '', category: 'Tips', date: '' })
+  const [form, setForm] = useState({
+    title: '',
+    excerpt: '',
+    contentBlocks: [{ type: 'text', content: '' }],
+    category: 'Tips',
+    date: ''
+  })
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+
+  // Content block management
+  const addTextBlock = () => setForm(p => ({
+    ...p,
+    contentBlocks: [...p.contentBlocks, { type: 'text', content: '' }]
+  }))
+
+  const addImageBlock = () => setForm(p => ({
+    ...p,
+    contentBlocks: [...p.contentBlocks, { type: 'image', content: '' }]
+  }))
+
+  const updateBlock = (index, field, value) => setForm(p => ({
+    ...p,
+    contentBlocks: p.contentBlocks.map((block, i) =>
+      i === index ? { ...block, [field]: value } : block
+    )
+  }))
+
+  const removeBlock = (index) => setForm(p => ({
+    ...p,
+    contentBlocks: p.contentBlocks.filter((_, i) => i !== index)
+  }))
+
+  const moveBlock = (index, direction) => setForm(p => {
+    const blocks = [...p.contentBlocks]
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= blocks.length) return p
+    const temp = blocks[index]
+    blocks[index] = blocks[newIndex]
+    blocks[newIndex] = temp
+    return { ...p, contentBlocks: blocks }
+  })
+
+  // Image upload for content blocks
+  const uploadContentImage = async (index) => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.onchange = async (e) => {
+      const file = e.target.files[0]
+      if (!file) return
+
+      setUploading(true)
+      try {
+        const url = await uploadToCloudinary(file, 'dearma/articles/content')
+        if (url) {
+          updateBlock(index, 'content', url)
+          toast.success('Gambar diupload!')
+        }
+      } catch (err) {
+        toast.error('Gagal upload: ' + err.message)
+      } finally {
+        setUploading(false)
+      }
+    }
+    input.click()
+  }
 
   const save = async () => {
     if (!form.title || !form.excerpt) { toast.error('Judul dan ringkasan wajib diisi!'); return }
     try {
+      // Convert contentBlocks to HTML content
+      const htmlContent = form.contentBlocks.map(block => {
+        if (block.type === 'image' && block.content) {
+          return `<img src="${block.content}" alt="" style="max-width: 100%; height: auto; margin: 1rem 0; border-radius: 8px;" />`
+        } else if (block.type === 'text' && block.content) {
+          return `<p>${block.content.replace(/\n/g, '<br>')}</p>`
+        }
+        return ''
+      }).join('\n')
+
       const data = {
         ...form,
+        content: htmlContent, // Store as HTML for backward compatibility
+        contentBlocks: form.contentBlocks, // Store structured data
         date: form.date || new Date().toLocaleDateString('id-ID'),
-        readTime: `${Math.max(1, Math.ceil((form.content?.split(' ').length || 100) / 200))} menit`,
+        readTime: `${Math.max(1, Math.ceil((htmlContent.split(' ').length || 100) / 200))} menit`,
         updatedAt: serverTimestamp()
       }
       if (editing) {
@@ -200,7 +277,7 @@ function ArticlesTab({ articles, refresh }) {
         await addDoc(collection(db, 'articles'), { ...data, createdAt: serverTimestamp() })
         toast.success('Artikel ditambahkan!')
       }
-      setForm({ title: '', excerpt: '', content: '', category: 'Tips', date: '' })
+      setForm({ title: '', excerpt: '', contentBlocks: [{ type: 'text', content: '' }], category: 'Tips', date: '' })
       setEditing(null); setShowForm(false)
       refresh()
     } catch { toast.error('Gagal menyimpan artikel') }
@@ -214,14 +291,20 @@ function ArticlesTab({ articles, refresh }) {
   }
 
   const edit = a => {
-    setForm({ title: a.title, excerpt: a.excerpt, content: a.content || '', category: a.category || 'Tips', date: a.date || '' })
+    setForm({
+      title: a.title,
+      excerpt: a.excerpt,
+      contentBlocks: a.contentBlocks || [{ type: 'text', content: a.content || '' }],
+      category: a.category || 'Tips',
+      date: a.date || ''
+    })
     setEditing(a.id); setShowForm(true)
   }
 
   return (
     <div>
       <div className={styles.tabHeader}>
-        <button className={styles.addBtn} onClick={() => { setForm({ title: '', excerpt: '', content: '', category: 'Tips', date: '' }); setEditing(null); setShowForm(true) }}>
+        <button className={styles.addBtn} onClick={() => { setForm({ title: '', excerpt: '', contentBlocks: [{ type: 'text', content: '' }], category: 'Tips', date: '' }); setEditing(null); setShowForm(true) }}>
           + Tambah Artikel
         </button>
       </div>
@@ -246,8 +329,62 @@ function ArticlesTab({ articles, refresh }) {
             <textarea name="excerpt" value={form.excerpt} onChange={handle} placeholder="Ringkasan singkat artikel..." className={styles.inp} rows={3} />
           </div>
           <div className={styles.field}>
-            <label>Konten (HTML diizinkan)</label>
-            <textarea name="content" value={form.content} onChange={handle} placeholder="<h2>Judul Section</h2><p>Isi konten...</p>" className={styles.inp} rows={10} />
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+              <label style={{ flex: 1 }}>Konten Artikel</label>
+              <button type="button" onClick={addTextBlock} className={styles.btnSmall} style={{ background: '#1A6EDB' }}>
+                + Teks
+              </button>
+              <button type="button" onClick={addImageBlock} className={styles.btnSmall} style={{ background: '#1A7A45' }}>
+                + Gambar
+              </button>
+            </div>
+
+            <div className={styles.contentBlocks}>
+              {form.contentBlocks.map((block, index) => (
+                <div key={index} className={styles.contentBlock}>
+                  <div className={styles.blockHeader}>
+                    <span className={styles.blockType}>
+                      {block.type === 'text' ? '📝 Teks' : '🖼️ Gambar'}
+                    </span>
+                    <div className={styles.blockActions}>
+                      {index > 0 && (
+                        <button type="button" onClick={() => moveBlock(index, -1)} className={styles.btnIcon}>↑</button>
+                      )}
+                      {index < form.contentBlocks.length - 1 && (
+                        <button type="button" onClick={() => moveBlock(index, 1)} className={styles.btnIcon}>↓</button>
+                      )}
+                      <button type="button" onClick={() => removeBlock(index)} className={styles.btnIcon} style={{ color: '#E53935' }}>×</button>
+                    </div>
+                  </div>
+
+                  {block.type === 'text' ? (
+                    <textarea
+                      value={block.content}
+                      onChange={e => updateBlock(index, 'content', e.target.value)}
+                      placeholder="Masukkan teks konten..."
+                      className={styles.inp}
+                      rows={4}
+                    />
+                  ) : (
+                    <div className={styles.imageBlock}>
+                      {block.content ? (
+                        <div>
+                          <img src={block.content} alt="" style={{ maxWidth: '200px', maxHeight: '150px', borderRadius: '8px' }} />
+                          <br />
+                          <button type="button" onClick={() => uploadContentImage(index)} className={styles.btnSmall} disabled={uploading}>
+                            {uploading ? 'Uploading...' : 'Ganti Gambar'}
+                          </button>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={() => uploadContentImage(index)} className={styles.btnSmall} disabled={uploading}>
+                          {uploading ? 'Uploading...' : 'Upload Gambar'}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           <div className={styles.formActions}>
             <button onClick={save} className={styles.saveBtn}>{editing ? 'Update' : 'Simpan'}</button>
