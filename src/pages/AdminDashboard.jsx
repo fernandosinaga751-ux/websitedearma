@@ -806,9 +806,13 @@ function ToursTab({ tours, refresh }) {
               <div style={S.stit}>📅 Itinerary (pisah hari dengan baris kosong)</div>
               <textarea style={{ ...S.inp, minHeight:120, resize:'vertical', fontSize:'.85rem' }}
                 value={form.itinerary} onChange={e => upd('itinerary', e.target.value)}
-                placeholder={'Pukul 07.00 berangkat dari Medan menuju Parapat\nCheck in hotel dan istirahat\nMakan malam bersama
+                placeholder={`Pukul 07.00 berangkat dari Medan menuju Parapat
+Check in hotel dan istirahat
+Makan malam bersama
 
-Pagi hari sarapan pagi\nTour keliling Danau Toba\nKunjungan ke Pulau Samosir'} rows={8} />
+Pagi hari sarapan pagi
+Tour keliling Danau Toba
+Kunjungan ke Pulau Samosir`} rows={8} />
             </div>
 
             {/* ─ JADWAL (open trip only) ─ */}
