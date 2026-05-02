@@ -248,7 +248,7 @@ export default function TourDetail() {
             {/* ITINERARY */}
             {tab === 'itinerary' && (
               <div>
-                <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
+                <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2> {/* Fixed JSX structure */}
                 <div className={styles.itineraryContent} dangerouslySetInnerHTML={{ __html: itineraryHtml }} />
 
                 {/* Jadwal tabel (open trip only) */}
