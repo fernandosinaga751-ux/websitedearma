@@ -318,6 +318,24 @@
 .tripMetaRow span { color: #7B8DA0; }
 .tripMetaRow strong { color: #081828; }
 
+/* Itinerary */
+.itineraryList { margin-top: 1.5rem; }
+.itineraryItem {
+  display: flex; gap: 1rem; margin-bottom: 1.5rem;
+  padding: 1.2rem; background: #F8FAFC; border-radius: 12px;
+  border: 1px solid #E8EFF9;
+}
+.itineraryDay {
+  font-weight: 800; color: #1A6EDB; font-size: .9rem;
+  min-width: 80px; text-transform: uppercase; letter-spacing: .05em;
+}
+.itineraryText { flex: 1; }
+.itineraryText p {
+  margin: 0 0 .5rem 0; color: #374151; line-height: 1.6;
+  font-size: .9rem;
+}
+.itineraryText p:last-child { margin-bottom: 0; }
+
 /* Mobile bottom bar */
 .mobileBar {
   display: none;
