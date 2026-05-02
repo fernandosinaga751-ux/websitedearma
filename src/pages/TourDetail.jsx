@@ -6,6 +6,22 @@ import { db } from '../firebase/config'
 import { useSettings } from '../context/SettingsContext'
 import styles from './TourDetail.module.css'
 
+const CURRENCIES = [
+  { code: 'IDR', symbol: 'Rp', label: 'IDR', locale: 'id-ID', flag: '🇮🇩' },
+  { code: 'MYR', symbol: 'RM', label: 'MYR', locale: 'ms-MY', flag: '🇲🇾' },
+  { code: 'SGD', symbol: 'S$', label: 'SGD', locale: 'en-SG', flag: '🇸🇬' },
+]
+
+const fmtCurrency = (idrAmount, currency, rates) => {
+  if (!idrAmount) return currency.symbol + ' 0'
+  if (currency.code === 'IDR') return 'Rp ' + Number(idrAmount).toLocaleString('id-ID')
+  const rate = rates?.[currency.code] || 1
+  const converted = idrAmount * rate
+  return currency.symbol + ' ' + converted.toLocaleString(currency.locale, {
+    minimumFractionDigits: 0, maximumFractionDigits: 2
+  })
+}
+
 const fmt = (n) => 'Rp ' + Number(n).toLocaleString('id-ID')
 
 const MONTHS_S = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']
@@ -44,7 +60,21 @@ export default function TourDetail() {
   const [faqOpen, setFaqOpen] = useState(null)
   const [copied, setCopied] = useState(false)
   const [selectedPaxIdx, setSelectedPaxIdx] = useState(0)
+  const [currency, setCurrency] = useState(CURRENCIES[0])
+  const [rates, setRates] = useState({ IDR: 1, MYR: null, SGD: null })
   const { settings } = useSettings()
+
+  useEffect(() => {
+    fetch('https://open.er-api.com/v6/latest/IDR')
+      .then(r => r.json())
+      .then(data => {
+        if (data?.rates) setRates({ IDR: 1, MYR: data.rates.MYR, SGD: data.rates.SGD })
+      })
+      .catch(() => {
+        // Fallback approximate rates if API fails
+        setRates({ IDR: 1, MYR: 0.000029, SGD: 0.000082 })
+      })
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -457,6 +487,22 @@ export default function TourDetail() {
           {/* ── SIDEBAR ── */}
           <div className={styles.sidebar}>
             <div className={styles.sidebarCard}>
+              {/* Currency switcher */}
+              <div className={styles.currencySwitch}>
+                {CURRENCIES.map(c => (
+                  <button
+                    key={c.code}
+                    onClick={() => setCurrency(c)}
+                    className={`${styles.currencyBtn} ${currency.code === c.code ? styles.currencyBtnActive : ''}`}
+                  >
+                    {c.flag} {c.label}
+                  </button>
+                ))}
+              </div>
+              {rates.MYR === null && currency.code !== 'IDR' && (
+                <div className={styles.rateLoading}>Memuat kurs...</div>
+              )}
+
               {/* Pax selector */}
               {paxList.length > 0 && (
                 <div className={styles.paxSection}>
@@ -469,7 +515,12 @@ export default function TourDetail() {
                           <div className={styles.paxLabel}>{p.label || `${p.pax} Pax`}</div>
                           {p.carType && <div className={styles.paxCarType}>{p.carType}</div>}
                         </div>
-                        <div className={styles.paxPrice}>{fmt(p.price || p.totalPrice || 0)}</div>
+                        <div className={styles.paxPrice}>
+                          <div>{fmtCurrency(p.price || p.totalPrice || 0, currency, rates)}</div>
+                          {currency.code !== 'IDR' && (
+                            <div className={styles.paxPriceIdr}>{fmt(p.price || p.totalPrice || 0)}</div>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -477,7 +528,10 @@ export default function TourDetail() {
               )}
 
               <div className={styles.sidebarPriceLabel}>Harga per orang</div>
-              <div className={styles.sidebarPrice}>{fmt(selPrice)}</div>
+              <div className={styles.sidebarPrice}>{fmtCurrency(selPrice, currency, rates)}</div>
+              {currency.code !== 'IDR' && (
+                <div className={styles.sidebarPriceSecondary}>≈ {fmt(selPrice)}</div>
+              )}
 
               <a href={waBookUrl} target="_blank" rel="noopener noreferrer" className={styles.bookBtn}>
                 💬 Book via WhatsApp
@@ -541,7 +595,10 @@ export default function TourDetail() {
       <div className={styles.mobileBar}>
         <div className={styles.mobileBarPrice}>
           <div className={styles.mobileBarLabel}>Mulai dari</div>
-          <div className={styles.mobileBarVal}>{fmt(selPrice)}</div>
+          <div className={styles.mobileBarVal}>{fmtCurrency(selPrice, currency, rates)}</div>
+          {currency.code !== 'IDR' && (
+            <div className={styles.mobileBarIdr}>{fmt(selPrice)}</div>
+          )}
         </div>
         <a href={waBookUrl} target="_blank" rel="noopener noreferrer" className={styles.mobileBarBtn}>
           💬 Book WhatsApp
