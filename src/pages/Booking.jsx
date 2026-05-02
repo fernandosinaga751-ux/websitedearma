@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { initializeApp, getApps, getApp } from 'firebase/app'
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import styles from './Booking.module.css'
 
 // ── Firebase bookingdearma (data menuju admin booking) ──────────────────────
@@ -158,7 +158,7 @@ export default function Booking() {
 
     const bk = {
       id: genId(),
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
       nama, wa, email, ktp,
       tipePesanan: bType === 1 ? 'airport' : 'rental',
       car: selCar, carLabel: c.label,

@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore'
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase/config'
 
 const staticCars = [
@@ -112,7 +112,7 @@ export const seedCarsToFirebase = async () => {
     for (const car of staticCars) {
       await addDoc(collection(db, 'cars'), {
         ...car,
-        createdAt: new Date()
+        createdAt: serverTimestamp()
       })
       console.log('Added:', car.name)
     }
