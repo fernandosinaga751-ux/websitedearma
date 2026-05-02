@@ -572,6 +572,51 @@ function ToursTab({ tours, refresh }) {
 
   const upd = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
+  // Text formatting for itinerary
+  const formatText = (formatType) => {
+    const textarea = document.getElementById('itinerary-editor')
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const selectedText = textarea.value.substring(start, end)
+
+    let formattedText = selectedText
+    let tag = ''
+
+    switch (formatType) {
+      case 'bold':
+        tag = 'strong'
+        break
+      case 'italic':
+        tag = 'em'
+        break
+      case 'underline':
+        tag = 'u'
+        break
+      default:
+        return
+    }
+
+    if (selectedText) {
+      // Wrap selected text
+      formattedText = `<${tag}>${selectedText}</${tag}>`
+    } else {
+      // Insert empty tags at cursor
+      formattedText = `<${tag}></${tag}>`
+    }
+
+    // Update textarea value
+    const newValue = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end)
+    upd('itinerary', newValue)
+
+    // Restore cursor position
+    setTimeout(() => {
+      textarea.focus()
+      textarea.setSelectionRange(start + formattedText.length, start + formattedText.length)
+    }, 0)
+  }
+
   const handleImageChange = async (e, field = 'imageUrl') => {
     const file = e.target.files[0]
     if (!file) return
@@ -803,16 +848,34 @@ function ToursTab({ tours, refresh }) {
 
             {/* ─ ITINERARY ─ */}
             <div style={S.sec}>
-              <div style={S.stit}>📅 Itinerary (pisah hari dengan baris kosong)</div> {/* Fixed syntax error */}
-              <textarea style={{ ...S.inp, minHeight:120, resize:'vertical', fontSize:'.85rem' }}
-                value={form.itinerary} onChange={e => upd('itinerary', e.target.value)}
-                placeholder={`Pukul 07.00 berangkat dari Medan menuju Parapat
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={S.stit}>📅 Itinerary Perjalanan</div>
+                <div className={styles.formatButtons}>
+                  <button type="button" onClick={() => formatText('bold')} className={styles.formatBtn} title="Bold">
+                    <strong>B</strong>
+                  </button>
+                  <button type="button" onClick={() => formatText('italic')} className={styles.formatBtn} title="Italic">
+                    <em>I</em>
+                  </button>
+                  <button type="button" onClick={() => formatText('underline')} className={styles.formatBtn} title="Underline">
+                    <u>U</u>
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id="itinerary-editor"
+                style={{ ...S.inp, minHeight:120, resize:'vertical', fontSize:'.85rem' }}
+                value={form.itinerary}
+                onChange={e => upd('itinerary', e.target.value)}
+                placeholder={`<strong>Hari 1:</strong> Pukul 07.00 berangkat dari Medan menuju Parapat
 Check in hotel dan istirahat
-Makan malam bersama
+<em>Makan malam bersama</em>
 
-Pagi hari sarapan pagi
-Tour keliling Danau Toba
-Kunjungan ke Pulau Samosir`} rows={8} />
+<strong>Hari 2:</strong> Pagi hari sarapan pagi
+<u>Tour keliling Danau Toba</u>
+Kunjungan ke Pulau Samosir`}
+                rows={10}
+              />
             </div>
 
             {/* ─ JADWAL (open trip only) ─ */}
