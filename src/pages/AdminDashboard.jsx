@@ -195,17 +195,17 @@ function ArticlesTab({ articles, refresh }) {
   // FAQ management
   const addFaqItem = () => setForm(p => ({
     ...p,
-    faqItems: [...p.faqItems, { question: '', answer: '' }]
+    faqItems: [...(p.faqItems || []), { question: '', answer: '' }]
   }))
 
   const removeFaqItem = (index) => setForm(p => ({
     ...p,
-    faqItems: p.faqItems.filter((_, i) => i !== index)
+    faqItems: (p.faqItems || []).filter((_, i) => i !== index)
   }))
 
   const updateFaqItem = (index, field, value) => setForm(p => ({
     ...p,
-    faqItems: p.faqItems.map((item, i) =>
+    faqItems: (p.faqItems || []).map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     )
   }))
@@ -282,8 +282,8 @@ function ArticlesTab({ articles, refresh }) {
       }).join('\n')
 
       // Convert FAQ items to string format for backward compatibility
-      const faqString = form.faqItems
-        .filter(item => item.question.trim())
+      const faqString = (form.faqItems || [])
+        .filter(item => item && item.question && item.question.trim())
         .map(item => item.question.trim())
         .join('\n')
 
@@ -329,7 +329,7 @@ function ArticlesTab({ articles, refresh }) {
       title: a.title,
       excerpt: a.excerpt,
       contentBlocks: a.contentBlocks || [{ type: 'text', content: a.content || '' }],
-      faqItems: a.faqItems || [{ question: '', answer: '' }],
+      faqItems: Array.isArray(a.faqItems) && a.faqItems.length > 0 ? a.faqItems : [{ question: '', answer: '' }],
       category: a.category || 'Tips',
       date: a.date || ''
     })
@@ -964,7 +964,7 @@ Kunjungan ke Pulau Samosir`}
               </div>
 
               <div className={styles.faqItems}>
-                {form.faqItems.map((item, index) => (
+                {(form.faqItems || []).map((item, index) => (
                   <div key={index} className={styles.faqItem}>
                     <div className={styles.faqHeader}>
                       <span className={styles.faqNumber}>Q{index + 1}</span>
