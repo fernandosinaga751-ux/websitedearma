@@ -282,19 +282,6 @@ export default function TourDetail() {
                 )}
               </div>
             )}
-                                return (
-                                  <td key={m} className={dates[ri] ? styles.jadwalActive : ''}>
-                                    {dates[ri] || '—'}
-                                  </td>
-                                )
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
