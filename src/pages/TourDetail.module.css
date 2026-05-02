@@ -472,11 +472,11 @@
   }
 
   .jadwalMonth {
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
     border-radius: 16px;
     padding: 1.5rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   }
 
   .jadwalMonthTitle {
@@ -543,7 +543,10 @@
   }
   .jadwalMonth {
     padding: 1rem;
-    border-radius: 10px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.06));
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
   }
   .jadwalMonthTitle {
     font-size: 0.9rem;
@@ -564,6 +567,9 @@
   /* Ultra small screens */
   .jadwalMonth {
     padding: 0.75rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.08));
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   .jadwalMonthTitle {
     font-size: 0.85rem;
