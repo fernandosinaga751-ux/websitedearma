@@ -287,8 +287,23 @@
   .filterBar { top: 64px; }
   .grid { grid-template-columns: 1fr; }
   .card { border-radius: 14px; }
+
+  /* Card mobile adjustments */
+  .cardBody { padding: 1rem; }
+  .cardTitle { font-size: 1rem; }
+  .paxRow { margin-bottom: .7rem; }
+  .cardBottom { padding-top: .7rem; }
+  .priceVal { font-size: 1rem; }
+  .detailBtn { padding: .45rem 1rem; font-size: .75rem; }
 }
 @media (max-width: 480px) {
   .heroTitle { font-size: 2rem; }
   .heroContent { padding: 90px 4% 60px; }
+
+  /* Extra mobile adjustments */
+  .cardBody { padding: .8rem; }
+  .cardTitle { font-size: .95rem; line-height: 1.2; }
+  .paxChip { font-size: .65rem; padding: 1px 6px; }
+  .priceVal { font-size: .95rem; }
+  .detailBtn { padding: .4rem .8rem; font-size: .7rem; }
 }

@@ -282,8 +282,6 @@ export default function TourDetail() {
                 )}
               </div>
             )}
-              </div>
-            )}
 
             {/* CATATAN */}
             {tab === 'catatan' && (
