@@ -472,42 +472,46 @@
   }
 
   .jadwalMonth {
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    padding: 1.25rem;
-    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   }
 
   .jadwalMonthTitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #c9a227;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     text-align: center;
     background: linear-gradient(135deg, #c9a227, #f5d780);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .jadwalDates {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
     gap: 0.75rem;
-    justify-content: center;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   .jadwalDate {
     background: linear-gradient(135deg, #c9a227, #f5d780);
     color: #1A1A2E;
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
-    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.95rem;
     font-weight: 700;
     text-align: center;
-    min-width: 60px;
-    box-shadow: 0 2px 8px rgba(201,162,39,0.3);
+    box-shadow: 0 3px 10px rgba(201,162,39,0.4);
     transition: all 0.3s ease;
+    border: 1px solid rgba(201,162,39,0.2);
   }
 
   .jadwalDate:hover {
@@ -546,13 +550,14 @@
     margin-bottom: 0.75rem;
   }
   .jadwalDates {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
     gap: 0.5rem;
+    max-width: 350px;
   }
   .jadwalDate {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-    min-width: 50px;
-    border-radius: 20px;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 18px;
   }
 
 @media (max-width: 360px) {
@@ -565,13 +570,14 @@
     margin-bottom: 0.5rem;
   }
   .jadwalDates {
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
     gap: 0.4rem;
+    max-width: 300px;
   }
   .jadwalDate {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-    min-width: 45px;
-    border-radius: 18px;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 16px;
   }
 }
 }
