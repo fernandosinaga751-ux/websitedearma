@@ -255,32 +255,53 @@ export default function TourDetail() {
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2> {/* Fixed JSX structure */}
                 <div className={styles.itineraryContent} dangerouslySetInnerHTML={{ __html: itineraryHtml }} />
 
-                {/* Jadwal tabel (open trip only) */}
+                {/* Jadwal Open Trip - hanya tanggal yang sudah dibuat */}
                 {hasJadwal && (
                   <div style={{ marginTop: '2.5rem' }}>
                     <h3 className={styles.sectionSubTitle}>📅 Jadwal Open Trip</h3>
-                    <div className={styles.jadwalWrap}>
-                      <table className={styles.jadwalTable}>
-                        <thead>
-                          <tr>
-                            {MONTHS_S.map(m => <th key={m}>{MONTHS_F[MONTHS_S.indexOf(m)]}</th>)}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[0,1,2,3,4].map(ri => (
-                            <tr key={ri}>
-                              {MONTHS_S.map(m => {
-                                const dates = tour.jadwal[m] || []
-                                return (
-                                  <td key={m} className={dates[ri] ? styles.jadwalActive : ''}>
-                                    {dates[ri] || '—'}
-                                  </td>
-                                )
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className={styles.jadwalContainer}>
+                      {(() => {
+                        // Collect all available dates
+                        const availableDates = []
+                        Object.entries(tour.jadwal || {}).forEach(([month, dates]) => {
+                          if (dates && dates.length > 0) {
+                            dates.forEach(date => {
+                              if (date && date.trim()) {
+                                availableDates.push({
+                                  month,
+                                  date: date.trim(),
+                                  monthName: MONTHS_F[MONTHS_S.indexOf(month)]
+                                })
+                              }
+                            })
+                          }
+                        })
+
+                        // Group by month
+                        const groupedDates = availableDates.reduce((acc, item) => {
+                          if (!acc[item.month]) {
+                            acc[item.month] = {
+                              monthName: item.monthName,
+                              dates: []
+                            }
+                          }
+                          acc[item.month].dates.push(item.date)
+                          return acc
+                        }, {})
+
+                        return Object.entries(groupedDates).map(([month, data]) => (
+                          <div key={month} className={styles.jadwalMonth}>
+                            <h4 className={styles.jadwalMonthTitle}>{data.monthName}</h4>
+                            <div className={styles.jadwalDates}>
+                              {data.dates.map((date, index) => (
+                                <div key={index} className={styles.jadwalDate}>
+                                  {date}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))
+                      })()}
                     </div>
                   </div>
                 )}
