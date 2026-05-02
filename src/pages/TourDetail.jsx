@@ -122,7 +122,13 @@ export default function TourDetail() {
   const parsedIncluded    = (tour.included  || '').split('\n').filter(Boolean)
   const parsedExcluded    = (tour.excluded  || '').split('\n').filter(Boolean)
   const parsedNotes       = (tour.notes     || '').split('\n').filter(Boolean)
-  const parsedItinerary   = (tour.itinerary || '').split('\n\n').filter(Boolean)
+
+  // Parse itinerary - support both old format (single \n) and new format (double \n\n)
+  const itineraryText = tour.itinerary || ''
+  const parsedItinerary = itineraryText.includes('\n\n')
+    ? itineraryText.split('\n\n').filter(Boolean)  // New format: double newlines separate days
+    : itineraryText.split('\n').filter(Boolean)    // Old format: single newlines separate days
+
   const parsedFaq         = (tour.faq       || '').split('\n').filter(Boolean)
 
   return (
@@ -247,16 +253,24 @@ export default function TourDetail() {
               <div>
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
                 <div className={styles.itineraryList}>
-                  {parsedItinerary.map((dayContent, i) => (
-                    <div key={i} className={styles.itineraryItem}>
-                      <div className={styles.itineraryDay}>Hari {i + 1}</div>
-                      <div className={styles.itineraryText}>
-                        {dayContent.split('\n').filter(Boolean).map((line, j) => (
-                          <p key={j}>{line}</p>
-                        ))}
+                  {parsedItinerary.map((dayContent, i) => {
+                    // Check if this is new format (multiple lines per day) or old format (one line per day)
+                    const isNewFormat = (tour.itinerary || '').includes('\n\n')
+                    const dayLines = isNewFormat
+                      ? dayContent.split('\n').filter(Boolean)  // New format: split into multiple lines
+                      : [dayContent]  // Old format: single line per day
+
+                    return (
+                      <div key={i} className={styles.itineraryItem}>
+                        <div className={styles.itineraryDay}>Hari {i + 1}</div>
+                        <div className={styles.itineraryText}>
+                          {dayLines.map((line, j) => (
+                            <p key={j}>{line}</p>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
                 {/* Jadwal tabel (open trip only) */}
                 {hasJadwal && (
