@@ -257,8 +257,6 @@ export default function TourDetail() {
                   className={styles.itineraryContent}
                   dangerouslySetInnerHTML={{ __html: itineraryHtml }}
                 />
-
-                {/* Jadwal Open Trip - hanya tanggal yang sudah dibuat */}
                 {hasJadwal && (
                   <div style={{ marginTop: '2.5rem' }}>
                     <h3 className={styles.sectionSubTitle}>📅 Jadwal Open Trip</h3>
@@ -278,7 +276,6 @@ export default function TourDetail() {
                             })
                           }
                         })
-
                         const groupedDates = availableDates.reduce((acc, item) => {
                           if (!acc[item.month]) {
                             acc[item.month] = {
@@ -289,7 +286,6 @@ export default function TourDetail() {
                           acc[item.month].dates.push(item.date)
                           return acc
                         }, {})
-
                         return Object.entries(groupedDates).map(([month, data]) => (
                           <div key={month} className={styles.jadwalMonth}>
                             <h4 className={styles.jadwalMonthTitle}>{data.monthName}</h4>
