@@ -379,18 +379,19 @@
 
 .destinationCell {
   padding: 1rem 1.5rem;
-  color: #e0e7ff;
+  color: #000000;
   line-height: 1.6;
   display: flex;
   align-items: center;
 }
 
 .destinationCell strong {
-  color: #f0f4ff;
+  color: #000000;
+  font-weight: 700;
 }
 
 .destinationCell em {
-  color: #c9a227;
+  color: #333333;
   font-style: italic;
 }
 
@@ -583,6 +584,7 @@
   .destinationCell {
     padding: 0.8rem 1rem;
     font-size: 0.9rem;
+    color: #000000;
   }
 
   /* Mobile jadwal cards */
@@ -633,6 +635,7 @@
   .destinationCell {
     padding: 0.6rem 0.8rem;
     font-size: 0.85rem;
+    color: #000000;
   }
 
   /* Ultra small jadwal */
