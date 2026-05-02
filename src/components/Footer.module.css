@@ -1,7 +1,19 @@
 .footer {
-  background: #070b14;
-  border-top: 1px solid rgba(201, 162, 39, 0.15);
-  padding-top: 60px;
+  background: var(--navy);
+  border-top: 1px solid var(--border);
+  padding-top: 80px;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
 .topLine {
@@ -19,8 +31,8 @@
 .grid {
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
-  gap: 48px;
-  padding: 60px 0 40px;
+  gap: 60px;
+  padding: 80px 0 60px;
 }
 
 .logo {
@@ -72,23 +84,25 @@
 }
 
 .social {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(201, 162, 39, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8892a4;
-  transition: all 0.3s;
+  color: var(--gray);
+  transition: all var(--transition);
+  box-shadow: var(--shadow-light);
 }
 
 .social:hover {
-  background: rgba(201, 162, 39, 0.15);
-  border-color: #c9a227;
-  color: #c9a227;
-  transform: translateY(-3px);
+  background: var(--surface2);
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
 .colTitle {

@@ -1,4 +1,4 @@
-.header { padding: 140px 0 70px; position: relative; overflow: hidden; background: linear-gradient(135deg, #070b14, #0d1528); }
+.header { padding: 160px 0 90px; position: relative; overflow: hidden; background: linear-gradient(135deg, var(--navy), var(--midnight)); }
 .headerBg { position: absolute; inset: 0; background-image: linear-gradient(rgba(201,162,39,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201,162,39,0.04) 1px, transparent 1px); background-size: 60px 60px; }
 .tag { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #c9a227; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; position: relative; }
 .title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5rem); letter-spacing: 2px; line-height: 1; color: #f0f4ff; position: relative; }
@@ -15,9 +15,10 @@
 .contacts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
 
 .contactItem {
-  display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px;
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px; transition: all 0.3s; text-decoration: none; color: inherit;
+  display: flex; align-items: flex-start; gap: 16px; padding: 20px 24px;
+  background: var(--surface); border: 1px solid var(--border-light);
+  border-radius: var(--radius); transition: all var(--transition); text-decoration: none; color: inherit;
+  box-shadow: var(--shadow-light);
 }
 .contactItem:is(a):hover { border-color: rgba(201,162,39,0.3); background: rgba(201,162,39,0.05); transform: translateX(4px); }
 .contactItem.wa { border-color: rgba(37,211,102,0.2); background: rgba(37,211,102,0.04); }

@@ -1,8 +1,16 @@
 .header {
-  padding: 140px 0 80px;
+  padding: 160px 0 100px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #070b14 0%, #0d1528 100%);
+  background: linear-gradient(135deg, var(--navy) 0%, var(--midnight) 50%, var(--navy2) 100%);
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(201,162,39,0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .headerBg {
@@ -65,13 +73,14 @@
 
 /* Filter */
 .filterSection {
-  padding: 32px 0;
-  background: #070b14;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 40px 0;
+  background: var(--navy);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 70px;
   z-index: 100;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .filters {
@@ -81,24 +90,29 @@
 }
 
 .filterBtn {
-  padding: 8px 18px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #8892a4;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  padding: 10px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  color: var(--gray);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.3s;
+  transition: all var(--transition);
   cursor: pointer;
 }
 
-.filterBtn:hover { border-color: rgba(201,162,39,0.3); color: #f0f4ff; }
+.filterBtn:hover {
+  border-color: var(--gold);
+  color: var(--white);
+  background: var(--surface2);
+}
 
 .filterBtn.active {
-  background: linear-gradient(135deg, #c9a227, #e8b84b);
-  color: #070b14;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--midnight);
   border-color: transparent;
   font-weight: 700;
+  box-shadow: var(--shadow-gold);
 }
 
 /* Cars Grid */
@@ -114,12 +128,13 @@
 }
 
 .card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
+  background: var(--surface-light);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
   overflow: hidden;
   position: relative;
-  transition: all 0.4s;
+  box-shadow: var(--shadow-light);
+  transition: all var(--transition);
   animation: fadeInUp 0.5s ease both;
 }
 
@@ -129,9 +144,9 @@
 }
 
 .card:hover {
-  border-color: rgba(201,162,39,0.3);
-  transform: translateY(-6px);
-  box-shadow: 0 24px 50px rgba(0,0,0,0.4);
+  border-color: var(--gold);
+  transform: translateY(-8px);
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5), var(--shadow-gold);
 }
 
 .tag2 {
