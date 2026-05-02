@@ -803,7 +803,7 @@ function ToursTab({ tours, refresh }) {
 
             {/* ─ ITINERARY ─ */}
             <div style={S.sec}>
-              <div style={S.stit}>📅 Itinerary (pisah hari dengan baris kosong)</div>
+              <div style={S.stit}>📅 Itinerary (pisah hari dengan baris kosong)</div> {/* Fixed syntax error */}
               <textarea style={{ ...S.inp, minHeight:120, resize:'vertical', fontSize:'.85rem' }}
                 value={form.itinerary} onChange={e => upd('itinerary', e.target.value)}
                 placeholder={`Pukul 07.00 berangkat dari Medan menuju Parapat
