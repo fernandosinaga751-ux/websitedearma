@@ -116,7 +116,7 @@ export default function TourDetail() {
     { key: 'catatan',   label: 'Catatan',   hide: !tour.notes },
     { key: 'ulasan',    label: 'Ulasan',    hide: !tour.ulasan?.length },
     { key: 'lokasi',    label: 'Lokasi' },
-    { key: 'faq',       label: 'FAQ',       hide: !tour.faq },
+    { key: 'faq',       label: 'FAQ',       hide: !(tour.faqItems?.length > 0 || tour.faq) },
   ].filter(t => !t.hide)
 
   const parsedIncluded    = (tour.included  || '').split('\n').filter(Boolean)
@@ -164,7 +164,9 @@ export default function TourDetail() {
 
   const itineraryBoxes = parseItineraryToBoxes(tour.itinerary || '')
 
-  const parsedFaq         = (tour.faq       || '').split('\n').filter(Boolean)
+  const parsedFaq = Array.isArray(tour.faqItems) && tour.faqItems.length > 0
+    ? tour.faqItems.filter(item => item.question)
+    : (tour.faq || '').split('\n').filter(Boolean).map(q => ({ question: q, answer: '' }))
 
   return (
     <>
@@ -412,15 +414,19 @@ export default function TourDetail() {
             {tab === 'faq' && (
               <div>
                 <h2 className={styles.sectionTitle}>FAQ</h2>
-                {parsedFaq.map((q, i) => (
+                {parsedFaq.map((item, i) => (
                   <div key={i} className={styles.faqItem}>
                     <div onClick={() => setFaqOpen(faqOpen === i ? null : i)}
                       className={styles.faqQ}>
-                      <span>{i+1}. {q}</span>
+                      <span>{i+1}. {item.question || item}</span>
                       <span className={`${styles.faqArrow} ${faqOpen === i ? styles.faqArrowOpen : ''}`}>⌄</span>
                     </div>
                     {faqOpen === i && (
-                      <div className={styles.faqA}>Hubungi kami via WhatsApp untuk jawaban lengkap.</div>
+                      <div className={styles.faqA}>
+                        {item.answer
+                          ? item.answer
+                          : 'Hubungi kami via WhatsApp untuk jawaban lengkap.'}
+                      </div>
                     )}
                   </div>
                 ))}
