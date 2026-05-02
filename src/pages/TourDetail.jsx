@@ -250,7 +250,7 @@ export default function TourDetail() {
               <div>
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
                 <div className={styles.itineraryContent} dangerouslySetInnerHTML={{ __html: itineraryHtml }} />
-              </div>
+
                 {/* Jadwal tabel (open trip only) */}
                 {hasJadwal && (
                   <div style={{ marginTop: '2.5rem' }}>
@@ -267,6 +267,21 @@ export default function TourDetail() {
                             <tr key={ri}>
                               {MONTHS_S.map(m => {
                                 const dates = tour.jadwal[m] || []
+                                return (
+                                  <td key={m} className={dates[ri] ? styles.jadwalActive : ''}>
+                                    {dates[ri] || '—'}
+                                  </td>
+                                )
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
                                 return (
                                   <td key={m} className={dates[ri] ? styles.jadwalActive : ''}>
                                     {dates[ri] || '—'}
