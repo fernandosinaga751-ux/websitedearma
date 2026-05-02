@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(7, 11, 20, 0.92);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   transition: all 0.4s ease;
@@ -13,7 +13,7 @@
 }
 
 .nav.scrolled {
-  background: rgba(7, 11, 20, 0.98);
+  background: rgba(255, 255, 255, 0.98);
   padding: 10px 0;
   border-bottom: 1px solid rgba(201, 162, 39, 0.25);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
@@ -66,7 +66,7 @@
 
 .brandSub {
   font-size: 0.68rem;
-  color: #8892a4;
+  color: #666666;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-top: 2px;
@@ -82,7 +82,7 @@
   padding: 8px 14px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #b0bac8;
+  color: #333333;
   border-radius: 8px;
   transition: all 0.3s;
   position: relative;
@@ -102,7 +102,7 @@
   transition: width 0.3s;
 }
 
-.link:hover { color: #f0f4ff; }
+.link:hover { color: #000000; }
 .link:hover::after,
 .link.active::after { width: 60%; }
 .link.active { color: #c9a227; }
@@ -159,7 +159,7 @@
     right: -100%;
     width: 270px;
     height: 100vh;
-    background: rgba(7, 11, 20, 0.99);
+    background: rgba(255, 255, 255, 0.99);
     backdrop-filter: blur(20px);
     flex-direction: column;
     align-items: flex-start;
