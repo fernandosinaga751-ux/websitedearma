@@ -284,7 +284,7 @@ export default function TourDetail() {
             )}
 
             {/* ITINERARY */}
-            {tab === 'itinerary' && (
+            {tab === 'itinerary' && ( /* Box grid layout */
               <div>
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
                 <div className={styles.itineraryBoxes}>
