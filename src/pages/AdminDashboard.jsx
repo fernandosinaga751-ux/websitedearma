@@ -595,7 +595,8 @@ const emptyTourForm = () => ({
   description: '', duration: '', imageUrl: '', heroImage: '', gallery: [],
   paxPricing: [{ pax: 1, label: '1 Pax', price: 0, carType: '' }],
   included: '', excluded: '', notes: '', itinerary: '', location: '',
-  lokasi_embed: '', faq: '', jadwal: {}, ulasan: [], tag: '', sortOrder: 99
+  lokasi_embed: '', faq: '', jadwal: {}, ulasan: [], tag: '', sortOrder: 99,
+  faqItems: [{ question: '', answer: '' }]
 })
 
 function ToursTab({ tours, refresh }) {
@@ -607,7 +608,21 @@ function ToursTab({ tours, refresh }) {
 
   const upd = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
-  // Text formatting for itinerary
+  // FAQ management
+  const addFaqItem = () => setForm(p => ({
+    ...p,
+    faqItems: [...(p.faqItems || []), { question: '', answer: '' }]
+  }))
+  const removeFaqItem = (index) => setForm(p => ({
+    ...p,
+    faqItems: (p.faqItems || []).filter((_, i) => i !== index)
+  }))
+  const updateFaqItem = (index, field, value) => setForm(p => ({
+    ...p,
+    faqItems: (p.faqItems || []).map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    )
+  }))
   const formatText = (formatType) => {
     const textarea = document.getElementById('itinerary-editor')
     if (!textarea) return
@@ -733,7 +748,8 @@ function ToursTab({ tours, refresh }) {
       itinerary: t.itinerary || '', location: t.location || '',
       lokasi_embed: t.lokasi_embed || '', faq: t.faq || '',
       jadwal: t.jadwal || {}, ulasan: t.ulasan || [],
-      tag: t.tag || '', sortOrder: t.sortOrder || 99
+      tag: t.tag || '', sortOrder: t.sortOrder || 99,
+      faqItems: Array.isArray(t.faqItems) && t.faqItems.length > 0 ? t.faqItems : [{ question: '', answer: '' }]
     })
     setEditing(t.id); setShowForm(true)
   }
