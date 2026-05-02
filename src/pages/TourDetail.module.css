@@ -318,44 +318,80 @@
 .tripMetaRow span { color: #7B8DA0; }
 .tripMetaRow strong { color: #081828; }
 
-/* Itinerary */
-.itineraryContent {
-  margin-top: 1.5rem;
-  line-height: 1.7;
-  font-size: 1rem;
-  color: #374151;
+/* Itinerary Boxes */
+.itineraryBoxes {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.itineraryContent h1,
-.itineraryContent h2,
-.itineraryContent h3,
-.itineraryContent h4,
-.itineraryContent h5,
-.itineraryContent h6 {
-  color: #1A6EDB;
-  margin: 1.5rem 0 0.5rem 0;
+.dayBox {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+.dayHeader {
+  background: linear-gradient(135deg, #c9a227, #f5d780);
+  color: #1A1A2E;
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid rgba(201,162,39,0.3);
 }
 
-.itineraryContent p {
-  margin: 0.5rem 0;
+.activitiesGrid {
+  padding: 0;
 }
 
-.itineraryContent strong {
-  font-weight: 700;
-  color: #111827;
+.activityRow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: background-color 0.3s ease;
 }
 
-.itineraryContent em {
+.activityRow:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.activityRow:last-child {
+  border-bottom: none;
+}
+
+.timeCell {
+  background: rgba(201,162,39,0.1);
+  padding: 1rem;
+  font-weight: 600;
+  color: #c9a227;
+  text-align: center;
+  border-right: 1px solid rgba(201,162,39,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.destinationCell {
+  padding: 1rem 1.5rem;
+  color: #e0e7ff;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+}
+
+.destinationCell strong {
+  color: #f0f4ff;
+}
+
+.destinationCell em {
+  color: #c9a227;
   font-style: italic;
-}
-
-.itineraryContent u {
-  text-decoration: underline;
-}
-
-.itineraryContent br {
-  margin-bottom: 0.5rem;
 }
 
 /* Mobile bottom bar */
@@ -527,14 +563,26 @@
   .shareRow { grid-template-columns: 1fr 1fr; }
 
   /* Itinerary mobile adjustments */
-  .itineraryContent {
-    font-size: .9rem;
-    padding: 0 1rem;
+  .itineraryBoxes {
+    gap: 1.5rem;
   }
-  .itineraryContent p {
-    margin: 0.75rem 0;
-    padding: 0.6rem 0.8rem;
-    font-size: .85rem;
+  .dayBox {
+    border-radius: 12px;
+  }
+  .dayHeader {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+  .activityRow {
+    grid-template-columns: 100px 1fr;
+  }
+  .timeCell {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  .destinationCell {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
   }
 
   /* Mobile jadwal cards */
@@ -565,6 +613,29 @@
 
 @media (max-width: 360px) {
   /* Ultra small screens */
+  .itineraryBoxes {
+    gap: 1rem;
+  }
+  .dayBox {
+    border-radius: 10px;
+  }
+  .dayHeader {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  .activityRow {
+    grid-template-columns: 80px 1fr;
+  }
+  .timeCell {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.8rem;
+  }
+  .destinationCell {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  /* Ultra small jadwal */
   .jadwalMonth {
     padding: 0.75rem;
     background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.08));

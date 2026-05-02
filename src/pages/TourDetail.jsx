@@ -123,12 +123,46 @@ export default function TourDetail() {
   const parsedExcluded    = (tour.excluded  || '').split('\n').filter(Boolean)
   const parsedNotes       = (tour.notes     || '').split('\n').filter(Boolean)
 
-  // Convert itinerary newlines to paragraphs
-  const itineraryHtml = (tour.itinerary || '')
-    .split('\n')
-    .filter(line => line.trim())
-    .map(line => `<p>${line.trim()}</p>`)
-    .join('')
+  // Parse itinerary into structured day boxes
+  const parseItineraryToBoxes = (text) => {
+    if (!text) return []
+
+    const lines = text.split('\n').filter(line => line.trim())
+    const days = []
+    let currentDay = null
+
+    lines.forEach(line => {
+      const trimmed = line.trim()
+
+      // Check if line starts with "Day" (case insensitive)
+      if (trimmed.toLowerCase().startsWith('day') && /\d+/.test(trimmed)) {
+        if (currentDay) {
+          days.push(currentDay)
+        }
+        currentDay = {
+          title: trimmed,
+          activities: []
+        }
+      } else if (currentDay && trimmed.includes('-')) {
+        // Parse time - destination format
+        const parts = trimmed.split('-').map(p => p.trim())
+        if (parts.length >= 2) {
+          currentDay.activities.push({
+            time: parts[0],
+            destination: parts.slice(1).join('-')
+          })
+        }
+      }
+    })
+
+    if (currentDay) {
+      days.push(currentDay)
+    }
+
+    return days
+  }
+
+  const itineraryBoxes = parseItineraryToBoxes(tour.itinerary || '')
 
   const parsedFaq         = (tour.faq       || '').split('\n').filter(Boolean)
 
@@ -253,10 +287,29 @@ export default function TourDetail() {
             {tab === 'itinerary' && (
               <div>
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
-                <div
-                  className={styles.itineraryContent}
-                  dangerouslySetInnerHTML={{ __html: itineraryHtml }}
-                />
+                <div className={styles.itineraryBoxes}>
+                  {itineraryBoxes.map((day, dayIndex) => (
+                    <div key={dayIndex} className={styles.dayBox}>
+                      <div className={styles.dayHeader}>
+                        {day.title}
+                      </div>
+                      {day.activities.length > 0 && (
+                        <div className={styles.activitiesGrid}>
+                          {day.activities.map((activity, actIndex) => (
+                            <div key={actIndex} className={styles.activityRow}>
+                              <div className={styles.timeCell}>
+                                {activity.time}
+                              </div>
+                              <div className={styles.destinationCell}>
+                                {activity.destination}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
                 {hasJadwal && (
                   <div style={{ marginTop: '2.5rem' }}>
                     <h3 className={styles.sectionSubTitle}>📅 Jadwal Open Trip</h3>
