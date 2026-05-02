@@ -122,7 +122,7 @@ export default function TourDetail() {
   const parsedIncluded    = (tour.included  || '').split('\n').filter(Boolean)
   const parsedExcluded    = (tour.excluded  || '').split('\n').filter(Boolean)
   const parsedNotes       = (tour.notes     || '').split('\n').filter(Boolean)
-  const parsedItinerary   = (tour.itinerary || '').split('\n').filter(Boolean)
+  const parsedItinerary   = (tour.itinerary || '').split('\n\n').filter(Boolean)
   const parsedFaq         = (tour.faq       || '').split('\n').filter(Boolean)
 
   return (
@@ -247,10 +247,14 @@ export default function TourDetail() {
               <div>
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
                 <div className={styles.itineraryList}>
-                  {parsedItinerary.map((line, i) => (
+                  {parsedItinerary.map((dayContent, i) => (
                     <div key={i} className={styles.itineraryItem}>
                       <div className={styles.itineraryDay}>Hari {i + 1}</div>
-                      <p className={styles.itineraryText}>{line}</p>
+                      <div className={styles.itineraryText}>
+                        {dayContent.split('\n').filter(Boolean).map((line, j) => (
+                          <p key={j}>{line}</p>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
