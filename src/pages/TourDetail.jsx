@@ -253,7 +253,10 @@ export default function TourDetail() {
             {tab === 'itinerary' && (
               <div>
                 <h2 className={styles.sectionTitle}>Itinerary Perjalanan</h2>
-                <div className={styles.itineraryContent} dangerouslySetInnerHTML={{ __html: itineraryHtml }} />
+                <div
+                  className={styles.itineraryContent}
+                  dangerouslySetInnerHTML={{ __html: itineraryHtml }}
+                />
 
                 {/* Jadwal Open Trip - hanya tanggal yang sudah dibuat */}
                 {hasJadwal && (
@@ -261,7 +264,6 @@ export default function TourDetail() {
                     <h3 className={styles.sectionSubTitle}>📅 Jadwal Open Trip</h3>
                     <div className={styles.jadwalContainer}>
                       {(() => {
-                        // Collect all available dates
                         const availableDates = []
                         Object.entries(tour.jadwal || {}).forEach(([month, dates]) => {
                           if (dates && dates.length > 0) {
@@ -277,7 +279,6 @@ export default function TourDetail() {
                           }
                         })
 
-                        // Group by month
                         const groupedDates = availableDates.reduce((acc, item) => {
                           if (!acc[item.month]) {
                             acc[item.month] = {
