@@ -192,6 +192,24 @@ function ArticlesTab({ articles, refresh }) {
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
+  // FAQ management
+  const addFaqItem = () => setForm(p => ({
+    ...p,
+    faqItems: [...p.faqItems, { question: '', answer: '' }]
+  }))
+
+  const removeFaqItem = (index) => setForm(p => ({
+    ...p,
+    faqItems: p.faqItems.filter((_, i) => i !== index)
+  }))
+
+  const updateFaqItem = (index, field, value) => setForm(p => ({
+    ...p,
+    faqItems: p.faqItems.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    )
+  }))
+
   // Content block management
   const addTextBlock = () => setForm(p => ({
     ...p,
@@ -249,24 +267,6 @@ function ArticlesTab({ articles, refresh }) {
     }
     input.click()
   }
-
-  // FAQ management
-  const addFaqItem = () => setForm(p => ({
-    ...p,
-    faqItems: [...p.faqItems, { question: '', answer: '' }]
-  }))
-
-  const removeFaqItem = (index) => setForm(p => ({
-    ...p,
-    faqItems: p.faqItems.filter((_, i) => i !== index)
-  }))
-
-  const updateFaqItem = (index, field, value) => setForm(p => ({
-    ...p,
-    faqItems: p.faqItems.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item
-    )
-  }))
 
   const save = async () => {
     if (!form.title || !form.excerpt) { toast.error('Judul dan ringkasan wajib diisi!'); return }
