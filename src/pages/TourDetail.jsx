@@ -123,8 +123,12 @@ export default function TourDetail() {
   const parsedExcluded    = (tour.excluded  || '').split('\n').filter(Boolean)
   const parsedNotes       = (tour.notes     || '').split('\n').filter(Boolean)
 
-  // Display itinerary as HTML content
-  const itineraryHtml = tour.itinerary || ''
+  // Convert itinerary newlines to paragraphs
+  const itineraryHtml = (tour.itinerary || '')
+    .split('\n')
+    .filter(line => line.trim())
+    .map(line => `<p>${line.trim()}</p>`)
+    .join('')
 
   const parsedFaq         = (tour.faq       || '').split('\n').filter(Boolean)
 
