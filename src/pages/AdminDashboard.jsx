@@ -182,6 +182,7 @@ function ArticlesTab({ articles, refresh }) {
     title: '',
     excerpt: '',
     contentBlocks: [{ type: 'text', content: '' }],
+    faqItems: [{ question: '', answer: '' }],
     category: 'Tips',
     date: ''
   })
@@ -249,6 +250,24 @@ function ArticlesTab({ articles, refresh }) {
     input.click()
   }
 
+  // FAQ management
+  const addFaqItem = () => setForm(p => ({
+    ...p,
+    faqItems: [...p.faqItems, { question: '', answer: '' }]
+  }))
+
+  const removeFaqItem = (index) => setForm(p => ({
+    ...p,
+    faqItems: p.faqItems.filter((_, i) => i !== index)
+  }))
+
+  const updateFaqItem = (index, field, value) => setForm(p => ({
+    ...p,
+    faqItems: p.faqItems.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    )
+  }))
+
   const save = async () => {
     if (!form.title || !form.excerpt) { toast.error('Judul dan ringkasan wajib diisi!'); return }
     try {
@@ -262,10 +281,18 @@ function ArticlesTab({ articles, refresh }) {
         return ''
       }).join('\n')
 
+      // Convert FAQ items to string format for backward compatibility
+      const faqString = form.faqItems
+        .filter(item => item.question.trim())
+        .map(item => item.question.trim())
+        .join('\n')
+
       const data = {
         ...form,
         content: htmlContent, // Store as HTML for backward compatibility
         contentBlocks: form.contentBlocks, // Store structured data
+        faq: faqString, // Store questions as string for backward compatibility
+        faqItems: form.faqItems, // Store structured Q&A data
         date: form.date || new Date().toLocaleDateString('id-ID'),
         readTime: `${Math.max(1, Math.ceil((htmlContent.split(' ').length || 100) / 200))} menit`,
         updatedAt: serverTimestamp()
@@ -277,7 +304,14 @@ function ArticlesTab({ articles, refresh }) {
         await addDoc(collection(db, 'articles'), { ...data, createdAt: serverTimestamp() })
         toast.success('Artikel ditambahkan!')
       }
-      setForm({ title: '', excerpt: '', contentBlocks: [{ type: 'text', content: '' }], category: 'Tips', date: '' })
+      setForm({
+        title: '',
+        excerpt: '',
+        contentBlocks: [{ type: 'text', content: '' }],
+        faqItems: [{ question: '', answer: '' }],
+        category: 'Tips',
+        date: ''
+      })
       setEditing(null); setShowForm(false)
       refresh()
     } catch { toast.error('Gagal menyimpan artikel') }
@@ -295,6 +329,7 @@ function ArticlesTab({ articles, refresh }) {
       title: a.title,
       excerpt: a.excerpt,
       contentBlocks: a.contentBlocks || [{ type: 'text', content: a.content || '' }],
+      faqItems: a.faqItems || [{ question: '', answer: '' }],
       category: a.category || 'Tips',
       date: a.date || ''
     })
@@ -304,7 +339,7 @@ function ArticlesTab({ articles, refresh }) {
   return (
     <div>
       <div className={styles.tabHeader}>
-        <button className={styles.addBtn} onClick={() => { setForm({ title: '', excerpt: '', contentBlocks: [{ type: 'text', content: '' }], category: 'Tips', date: '' }); setEditing(null); setShowForm(true) }}>
+        <button className={styles.addBtn} onClick={() => { setForm({ title: '', excerpt: '', contentBlocks: [{ type: 'text', content: '' }], faqItems: [{ question: '', answer: '' }], category: 'Tips', date: '' }); setEditing(null); setShowForm(true) }}>
           + Tambah Artikel
         </button>
       </div>
@@ -921,10 +956,46 @@ Kunjungan ke Pulau Samosir`}
 
             {/* ─ FAQ ─ */}
             <div style={S.sec}>
-              <div style={S.stit}>❓ FAQ (satu pertanyaan per baris)</div>
-              <textarea style={{ ...S.inp, minHeight:80, resize:'vertical', fontSize:'.85rem' }}
-                value={form.faq} onChange={e => upd('faq', e.target.value)}
-                placeholder={'Apakah ada biaya tambahan?\nDimana meeting point?'} rows={4} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={S.stit}>❓ FAQ</div>
+                <button type="button" onClick={addFaqItem} className={styles.btnSmall} style={{ background: '#1A6EDB' }}>
+                  + Tambah FAQ
+                </button>
+              </div>
+
+              <div className={styles.faqItems}>
+                {form.faqItems.map((item, index) => (
+                  <div key={index} className={styles.faqItem}>
+                    <div className={styles.faqHeader}>
+                      <span className={styles.faqNumber}>Q{index + 1}</span>
+                      <button type="button" onClick={() => removeFaqItem(index)} className={styles.btnIcon} style={{ color: '#E53935' }}>×</button>
+                    </div>
+
+                    <div className={styles.faqFields}>
+                      <div className={styles.faqField}>
+                        <label style={{ ...S.lbl, fontSize: '.8rem' }}>Pertanyaan</label>
+                        <input
+                          style={{ ...S.inp, fontSize: '.85rem' }}
+                          value={item.question}
+                          onChange={e => updateFaqItem(index, 'question', e.target.value)}
+                          placeholder="Apakah ada biaya tambahan?"
+                        />
+                      </div>
+
+                      <div className={styles.faqField}>
+                        <label style={{ ...S.lbl, fontSize: '.8rem' }}>Jawaban</label>
+                        <textarea
+                          style={{ ...S.inp, minHeight: 60, resize: 'vertical', fontSize: '.85rem' }}
+                          value={item.answer}
+                          onChange={e => updateFaqItem(index, 'answer', e.target.value)}
+                          placeholder="Jawaban lengkap untuk pertanyaan ini..."
+                          rows={2}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* ─ LOKASI ─ */}
