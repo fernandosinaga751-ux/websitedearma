@@ -189,8 +189,77 @@ function ArticlesTab({ articles, refresh }) {
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [aiPrompt, setAiPrompt] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+
+  // --- Gemini AI Article Generator ---
+  const generateWithAI = async () => {
+    if (!aiPrompt.trim()) { toast.error('Masukkan topik atau ide artikel terlebih dahulu'); return }
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY
+    if (!apiKey) { toast.error('API Key Gemini belum dikonfigurasi di file .env'); return }
+    setAiLoading(true)
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `Kamu adalah penulis konten profesional untuk website rental mobil "Dearma Sewa Mobil Medan".
+
+Buat artikel blog lengkap dalam Bahasa Indonesia berdasarkan topik berikut: "${aiPrompt}"
+
+Artikel harus informatif, SEO-friendly, dan relevan dengan layanan rental mobil di Medan.
+
+PENTING: Balas HANYA dengan JSON murni, tanpa markdown, tanpa kode block, tanpa teks tambahan apapun.
+Format JSON yang diharapkan:
+{
+  "title": "Judul artikel yang menarik dan SEO friendly",
+  "excerpt": "Ringkasan artikel 1-2 kalimat yang menarik pembaca",
+  "category": "Tips",
+  "blocks": [
+    {"type": "text", "content": "Paragraf pembuka yang menarik..."},
+    {"type": "text", "content": "Paragraf isi dengan subjudul misalnya:\\n\\n1. Poin pertama\\n\\nPenjelasan poin pertama..."},
+    {"type": "text", "content": "Paragraf penutup dengan call to action ke Dearma Sewa Mobil Medan..."}
+  ]
+}
+
+Category harus salah satu dari: Tips, Wisata, Info, Armada, Promo`
+              }]
+            }],
+            generationConfig: {
+              temperature: 0.8,
+              maxOutputTokens: 2048
+            }
+          })
+        }
+      )
+      if (!response.ok) throw new Error(`API error: ${response.status}`)
+      const data = await response.json()
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+      const cleanText = rawText.replace(/```json\n?|\n?```/g, '').trim()
+      const parsed = JSON.parse(cleanText)
+      setForm(p => ({
+        ...p,
+        title: parsed.title || p.title,
+        excerpt: parsed.excerpt || p.excerpt,
+        category: parsed.category || p.category,
+        contentBlocks: Array.isArray(parsed.blocks) && parsed.blocks.length > 0
+          ? parsed.blocks
+          : p.contentBlocks
+      }))
+      toast.success('✨ Artikel berhasil di-generate oleh AI!')
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal generate artikel: ' + err.message)
+    } finally {
+      setAiLoading(false)
+    }
+  }
 
   // FAQ management
   const addFaqItem = () => setForm(p => ({
@@ -347,6 +416,37 @@ function ArticlesTab({ articles, refresh }) {
       {showForm && (
         <div className={styles.formCard}>
           <h3 className={styles.formCardTitle}>{editing ? 'Edit Artikel' : 'Artikel Baru'}</h3>
+
+          {/* AI Generator Section */}
+          <div className={styles.aiSection}>
+            <div className={styles.aiSectionHeader}>
+              <span className={styles.aiIcon}>✨</span>
+              <div>
+                <div className={styles.aiTitle}>Generate Artikel dengan AI (Gemini)</div>
+                <div className={styles.aiSubtitle}>Deskripsikan topik dan biarkan AI menuliskan artikel lengkap untuk Anda</div>
+              </div>
+            </div>
+            <div className={styles.aiInputRow}>
+              <textarea
+                value={aiPrompt}
+                onChange={e => setAiPrompt(e.target.value)}
+                placeholder="Contoh: Tips memilih mobil rental untuk liburan keluarga di Medan... atau: Destinasi wisata terbaik di Sumatera Utara yang wajib dikunjungi..."
+                className={styles.inp}
+                rows={3}
+                disabled={aiLoading}
+              />
+              <button
+                type="button"
+                onClick={generateWithAI}
+                disabled={aiLoading}
+                className={styles.aiGenerateBtn}
+              >
+                {aiLoading ? <><span className={styles.aiSpinner} /> Generating...</> : <>✨ Generate Artikel</>}
+              </button>
+            </div>
+            {aiLoading && <div className={styles.aiLoadingNote}>⏳ AI sedang menulis artikel Anda... Mohon tunggu sebentar.</div>}
+          </div>
+
           <div className={styles.formGrid}>
             <div className={styles.field}>
               <label>Judul *</label>
