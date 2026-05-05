@@ -191,8 +191,46 @@ function ArticlesTab({ articles, refresh }) {
   const [uploading, setUploading] = useState(false)
   const [aiPrompt, setAiPrompt] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
+  const [pasteText, setPasteText] = useState('')
+  const [pasteLoading, setPasteLoading] = useState(false)
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+
+  // --- AI: Perbaiki artikel yang di-paste ---
+  const reformatWithAI = async () => {
+    if (!pasteText.trim()) { toast.error('Tempel artikel terlebih dahulu'); return }
+    if (pasteText.trim().length < 100) { toast.error('Artikel terlalu pendek, minimal 100 karakter'); return }
+    setPasteLoading(true)
+    try {
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'reformat', text: pasteText })
+      })
+      if (response.status === 429) {
+        toast.error('⏳ Terlalu banyak request. Tunggu beberapa detik lalu coba lagi.')
+        return
+      }
+      const parsed = await response.json()
+      if (!response.ok) throw new Error(parsed.error || `Server error: ${response.status}`)
+      setForm(p => ({
+        ...p,
+        title: parsed.title || p.title,
+        excerpt: parsed.excerpt || p.excerpt,
+        category: parsed.category || p.category,
+        contentBlocks: Array.isArray(parsed.blocks) && parsed.blocks.length > 0
+          ? parsed.blocks
+          : p.contentBlocks
+      }))
+      setPasteText('')
+      toast.success('✨ Artikel berhasil diperbaiki oleh AI!')
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal memproses artikel: ' + err.message)
+    } finally {
+      setPasteLoading(false)
+    }
+  }
 
   // --- Gemini AI Article Generator ---
   const generateWithAI = async () => {
@@ -419,6 +457,58 @@ function ArticlesTab({ articles, refresh }) {
               </button>
             </div>
             {aiLoading && <div className={styles.aiLoadingNote}>⏳ AI sedang menulis artikel Anda... Mohon tunggu sebentar.</div>}
+          </div>
+
+          {/* Perbaiki Artikel Section */}
+          <div className={styles.aiSection} style={{ borderColor: 'rgba(16,185,129,0.25)', background: 'linear-gradient(135deg, rgba(16,185,129,0.06), rgba(5,150,105,0.04))' }}>
+            <div className={styles.aiSectionHeader}>
+              <span className={styles.aiIcon}>📋</span>
+              <div>
+                <div className={styles.aiTitle} style={{ color: '#34d399' }}>Perbaiki Artikel dari Copy-Paste</div>
+                <div className={styles.aiSubtitle}>Tempel artikel mentah dari manapun, AI akan memformat dan mempercantiknya otomatis</div>
+              </div>
+            </div>
+            <textarea
+              value={pasteText}
+              onChange={e => setPasteText(e.target.value)}
+              placeholder={`Tempel artikel di sini...
+
+Contoh: artikel dari blog lain, catatan, draft mentah, atau teks apapun yang ingin diperbaiki formatnya.
+
+AI akan:
+• Menambahkan judul & ringkasan yang menarik
+• Membagi menjadi paragraf dengan heading yang rapi
+• Membuat poin-poin penting menjadi list
+• Menambahkan foto relevan otomatis`}
+              className={styles.inp}
+              rows={8}
+              disabled={pasteLoading}
+              style={{ marginBottom: '0.75rem', fontFamily: 'inherit' }}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <button
+                type="button"
+                onClick={reformatWithAI}
+                disabled={pasteLoading || !pasteText.trim()}
+                className={styles.aiGenerateBtn}
+                style={{ background: pasteLoading || !pasteText.trim() ? undefined : 'linear-gradient(135deg, #059669, #10b981)' }}
+              >
+                {pasteLoading
+                  ? <><span className={styles.aiSpinner} /> Memproses...</>
+                  : <>✨ Perbaiki & Format Artikel</>
+                }
+              </button>
+              {pasteText.trim().length > 0 && (
+                <span style={{ fontSize: '0.78rem', color: '#8892a4' }}>
+                  {pasteText.trim().length} karakter
+                </span>
+              )}
+            </div>
+            {pasteLoading && (
+              <div className={styles.aiLoadingNote} style={{ color: '#34d399' }}>
+                ⏳ AI sedang memperbaiki dan memformat artikel Anda... Mohon tunggu.
+              </div>
+            )}
           </div>
 
           <div className={styles.formGrid}>
