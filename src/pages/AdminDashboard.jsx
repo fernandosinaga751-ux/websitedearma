@@ -313,8 +313,12 @@ function ArticlesTab({ articles, refresh }) {
       // Convert contentBlocks to HTML content
       const htmlContent = form.contentBlocks.map(block => {
         if (block.type === 'image' && block.content) {
-          return `<img src="${block.content}" alt="" style="max-width: 100%; height: auto; margin: 1rem 0; border-radius: 8px;" />`
+          return `<img src="${block.content}" alt="" style="max-width: 100%; height: auto; margin: 1.5rem 0; border-radius: 12px;" />`
+        } else if (block.type === 'html' && block.content) {
+          return block.content // Sudah HTML, langsung pakai
         } else if (block.type === 'text' && block.content) {
+          // Jika sudah ada tag HTML, render langsung
+          if (/<[a-z][\s\S]*>/i.test(block.content)) return block.content
           return `<p>${block.content.replace(/\n/g, '<br>')}</p>`
         }
         return ''
@@ -449,7 +453,7 @@ function ArticlesTab({ articles, refresh }) {
                 <div key={index} className={styles.contentBlock}>
                   <div className={styles.blockHeader}>
                     <span className={styles.blockType}>
-                      {block.type === 'text' ? '📝 Teks' : '🖼️ Gambar'}
+                      {block.type === 'text' ? '📝 Teks' : block.type === 'html' ? '✨ AI Konten' : '🖼️ Gambar'}
                     </span>
                     <div className={styles.blockActions}>
                       {index > 0 && (
@@ -462,7 +466,22 @@ function ArticlesTab({ articles, refresh }) {
                     </div>
                   </div>
 
-                  {block.type === 'text' ? (
+                  {block.type === 'html' ? (
+                    <div className={styles.htmlBlockPreview}>
+                      <div
+                        className={styles.htmlPreviewContent}
+                        dangerouslySetInnerHTML={{ __html: block.content }}
+                      />
+                      <textarea
+                        value={block.content}
+                        onChange={e => updateBlock(index, 'content', e.target.value)}
+                        className={styles.inp}
+                        rows={4}
+                        style={{ marginTop: '0.5rem', fontSize: '0.78rem', color: '#8892a4' }}
+                        placeholder="HTML konten..."
+                      />
+                    </div>
+                  ) : block.type === 'text' ? (
                     <textarea
                       value={block.content}
                       onChange={e => updateBlock(index, 'content', e.target.value)}

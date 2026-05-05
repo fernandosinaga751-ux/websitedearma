@@ -407,3 +407,40 @@
   animation: pulse 1.5s ease-in-out infinite;
 }
 @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.5 } }
+
+/* ===== HTML Block Preview (AI Generated) ===== */
+.htmlBlockPreview {
+  background: rgba(201,162,39,0.04);
+  border: 1px solid rgba(201,162,39,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.htmlPreviewContent {
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #c8d0e0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.htmlPreviewContent h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #c9a227;
+  margin: 0.75rem 0 0.4rem;
+}
+.htmlPreviewContent h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e0c87a;
+  margin: 0.6rem 0 0.3rem;
+}
+.htmlPreviewContent p { margin: 0 0 0.5rem; color: #9aa3b2; font-size: 0.85rem; }
+.htmlPreviewContent ul, .htmlPreviewContent ol {
+  padding-left: 1.2rem;
+  margin: 0.4rem 0;
+  color: #9aa3b2;
+  font-size: 0.85rem;
+}
+.htmlPreviewContent li { margin-bottom: 0.25rem; }
+.htmlPreviewContent strong { color: #d4c08a; font-weight: 600; }
