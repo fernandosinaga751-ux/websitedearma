@@ -197,52 +197,22 @@ function ArticlesTab({ articles, refresh }) {
   // --- Gemini AI Article Generator ---
   const generateWithAI = async () => {
     if (!aiPrompt.trim()) { toast.error('Masukkan topik atau ide artikel terlebih dahulu'); return }
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-    if (!apiKey) { toast.error('API Key Gemini belum dikonfigurasi di file .env'); return }
     setAiLoading(true)
     try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `Kamu adalah penulis konten profesional untuk website rental mobil "Dearma Sewa Mobil Medan".
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: aiPrompt })
+      })
 
-Buat artikel blog lengkap dalam Bahasa Indonesia berdasarkan topik berikut: "${aiPrompt}"
+      if (response.status === 429) {
+        toast.error('⏳ Terlalu banyak request. Tunggu beberapa detik lalu coba lagi.')
+        return
+      }
 
-Artikel harus informatif, SEO-friendly, dan relevan dengan layanan rental mobil di Medan.
+      const parsed = await response.json()
+      if (!response.ok) throw new Error(parsed.error || `Server error: ${response.status}`)
 
-PENTING: Balas HANYA dengan JSON murni, tanpa markdown, tanpa kode block, tanpa teks tambahan apapun.
-Format JSON yang diharapkan:
-{
-  "title": "Judul artikel yang menarik dan SEO friendly",
-  "excerpt": "Ringkasan artikel 1-2 kalimat yang menarik pembaca",
-  "category": "Tips",
-  "blocks": [
-    {"type": "text", "content": "Paragraf pembuka yang menarik..."},
-    {"type": "text", "content": "Paragraf isi dengan subjudul misalnya:\\n\\n1. Poin pertama\\n\\nPenjelasan poin pertama..."},
-    {"type": "text", "content": "Paragraf penutup dengan call to action ke Dearma Sewa Mobil Medan..."}
-  ]
-}
-
-Category harus salah satu dari: Tips, Wisata, Info, Armada, Promo`
-              }]
-            }],
-            generationConfig: {
-              temperature: 0.8,
-              maxOutputTokens: 2048
-            }
-          })
-        }
-      )
-      if (!response.ok) throw new Error(`API error: ${response.status}`)
-      const data = await response.json()
-      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
-      const cleanText = rawText.replace(/```json\n?|\n?```/g, '').trim()
-      const parsed = JSON.parse(cleanText)
       setForm(p => ({
         ...p,
         title: parsed.title || p.title,

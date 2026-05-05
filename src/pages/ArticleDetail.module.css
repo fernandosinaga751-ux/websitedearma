@@ -63,3 +63,64 @@
 }
 .cta h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 1px; color: #f0f4ff; margin-bottom: 10px; }
 .cta p { color: #8892a4; margin-bottom: 24px; }
+
+/* ===== Share Buttons ===== */
+.shareSection {
+  max-width: 760px;
+  margin: 0 auto 48px;
+  padding: 28px 32px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+}
+.shareTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #8892a4;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.shareButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.shareFacebook,
+.shareWhatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.shareFacebook {
+  background: rgba(24,119,242,0.12);
+  border: 1px solid rgba(24,119,242,0.3);
+  color: #4a9eff;
+}
+.shareFacebook:hover {
+  background: rgba(24,119,242,0.22);
+  border-color: rgba(24,119,242,0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24,119,242,0.2);
+}
+.shareWhatsapp {
+  background: rgba(37,211,102,0.1);
+  border: 1px solid rgba(37,211,102,0.25);
+  color: #25d366;
+}
+.shareWhatsapp:hover {
+  background: rgba(37,211,102,0.2);
+  border-color: rgba(37,211,102,0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37,211,102,0.2);
+}
