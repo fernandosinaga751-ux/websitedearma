@@ -1,20 +1,7 @@
-export default async function handler(req, res) {
-  // Hanya izinkan POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
-  }
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-  const { prompt } = req.body
-  if (!prompt || !prompt.trim()) {
-    return res.status(400).json({ error: 'Prompt diperlukan' })
-  }
-
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) {
-    return res.status(500).json({ error: 'GEMINI_API_KEY belum dikonfigurasi di server' })
-  }
-
-  try {
+async function callGeminiWithRetry(apiKey, prompt, maxRetries = 4) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
@@ -53,32 +40,62 @@ Category harus salah satu dari: Tips, Wisata, Info, Armada, Promo`
       }
     )
 
-    // Handle rate limit
+    // Kalau 429, tunggu lalu retry otomatis
     if (geminiRes.status === 429) {
-      return res.status(429).json({
-        error: 'Batas request API tercapai. Tunggu beberapa detik lalu coba lagi.'
-      })
+      if (attempt < maxRetries - 1) {
+        const waitMs = Math.pow(2, attempt) * 3000 // 3s, 6s, 12s
+        console.log(`Rate limited. Retry ${attempt + 1}/${maxRetries - 1} setelah ${waitMs / 1000}s...`)
+        await sleep(waitMs)
+        continue
+      }
+      return { ok: false, status: 429, error: 'Rate limit API Gemini tercapai. Coba lagi dalam 1 menit.' }
     }
 
     if (!geminiRes.ok) {
-      const errData = await geminiRes.json()
-      return res.status(geminiRes.status).json({
+      const errData = await geminiRes.json().catch(() => ({}))
+      return {
+        ok: false,
+        status: geminiRes.status,
         error: errData?.error?.message || `Gemini API error: ${geminiRes.status}`
-      })
+      }
     }
 
     const data = await geminiRes.json()
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
     const cleanText = rawText.replace(/```json\n?|\n?```/g, '').trim()
 
-    let parsed
     try {
-      parsed = JSON.parse(cleanText)
+      const parsed = JSON.parse(cleanText)
+      return { ok: true, data: parsed }
     } catch {
-      return res.status(500).json({ error: 'Gagal memparse respons dari AI. Coba lagi.' })
+      return { ok: false, status: 500, error: 'Gagal memparse respons dari AI. Coba lagi.' }
+    }
+  }
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  const { prompt } = req.body
+  if (!prompt || !prompt.trim()) {
+    return res.status(400).json({ error: 'Prompt diperlukan' })
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) {
+    return res.status(500).json({ error: 'GEMINI_API_KEY belum dikonfigurasi di server' })
+  }
+
+  try {
+    const result = await callGeminiWithRetry(apiKey, prompt.trim())
+
+    if (!result.ok) {
+      return res.status(result.status).json({ error: result.error })
     }
 
-    return res.status(200).json(parsed)
+    return res.status(200).json(result.data)
 
   } catch (err) {
     console.error('Gemini proxy error:', err)
